@@ -2,6 +2,8 @@
 
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 [![Build Status](https://travis-ci.org/evolution-gaming/pillar.svg?branch=master)](https://travis-ci.org/evolution-gaming/pillar)
+[![Coverage Status](https://coveralls.io/repos/evolution-gaming/pillar/badge.svg)](https://coveralls.io/r/evolution-gaming/pillar)
+[![version](https://api.bintray.com/packages/evolutiongaming/maven/pillar/images/download.svg)](https://bintray.com/evolutiongaming/maven/pillar/_latestVersion)
 
 Pillar manages migrations for your [Cassandra][cassandra] data stores.
 
