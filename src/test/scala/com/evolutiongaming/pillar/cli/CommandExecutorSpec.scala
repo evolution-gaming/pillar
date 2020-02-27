@@ -1,6 +1,6 @@
 package com.evolutiongaming.pillar.cli
 
-import java.util.Date
+import java.time.Instant
 
 import com.datastax.driver.core.Session
 import com.evolutiongaming.pillar._
@@ -18,7 +18,7 @@ class CommandExecutorSpec extends AnyFunSpec with BeforeAndAfter with MockitoSug
     val appliedMigrationsTableName = "applied_migrations"
     val simpleStrategy = SimpleStrategy()
     val networkTopologyStrategy = NetworkTopologyStrategyTestData.networkTopologyStrategy
-    val migratorConstructor = mock[((Registry, Reporter, String) => Migrator)]
+    val migratorConstructor = mock[(Registry, Reporter, String) => Migrator]
     when(migratorConstructor.apply(registry, reporter, appliedMigrationsTableName)).thenReturn(migrator)
     val executor = new CommandExecutor()(migratorConstructor)
 
@@ -51,8 +51,8 @@ class CommandExecutorSpec extends AnyFunSpec with BeforeAndAfter with MockitoSug
     }
 
     describe("a migrate action with date restriction") {
-      val date = new Date()
-      val command = Command(Migrate, session, keyspace, Some(date.getTime), registry, simpleStrategy, appliedMigrationsTableName)
+      val date = Instant.now
+      val command = Command(Migrate, session, keyspace, Some(date.toEpochMilli), registry, simpleStrategy, appliedMigrationsTableName)
 
       executor.execute(command, reporter)
 

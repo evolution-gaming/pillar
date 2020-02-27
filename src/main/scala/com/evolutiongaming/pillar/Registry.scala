@@ -1,7 +1,7 @@
 package com.evolutiongaming.pillar
 
 import java.io.{File, FileInputStream}
-import java.util.Date
+import java.time.Instant
 
 object Registry {
   def apply(migrations: Seq[Migration]): Registry = {
@@ -40,7 +40,7 @@ class Registry(private var migrations: Seq[Migration]) {
     (memo, migration) => memo + (migration.key -> migration)
   }
 
-  def authoredBefore(date: Date): Seq[Migration] = {
+  def authoredBefore(date: Instant): Seq[Migration] = {
     migrations.filter(migration => migration.authoredBefore(date))
   }
 

@@ -1,6 +1,6 @@
 package com.evolutiongaming.pillar.cli
 
-import java.util.Date
+import java.time.Instant
 
 import com.evolutiongaming.pillar.{Migrator, Registry, Reporter}
 
@@ -16,7 +16,7 @@ class CommandExecutor(implicit val migratorConstructor: (Registry, Reporter, Str
 
     command.action match {
       case Initialize => migrator.initialize(command.session, command.keyspace, command.replicationStrategy); ()
-      case Migrate => migrator.migrate(command.session, command.timeStampOption.map(new Date(_)))
+      case Migrate => migrator.migrate(command.session, command.timeStampOption.map(Instant.ofEpochMilli))
     }
   }
 }

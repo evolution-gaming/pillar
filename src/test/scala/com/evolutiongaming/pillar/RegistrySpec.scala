@@ -1,7 +1,7 @@
 package com.evolutiongaming.pillar
 
 import java.io.File
-import java.util.Date
+import java.time.Instant
 
 import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfter
@@ -30,14 +30,14 @@ class RegistrySpec extends AnyFunSpec with BeforeAndAfter with Matchers with Moc
       val reporter = mock[Reporter]
       it("returns a registry populated with reporting migrations") {
         val registry = Registry.fromDirectory(new File("src/test/resources/pillar/migrations/faker/"), reporter)
-        registry.all(0).getClass should be(classOf[ReportingMigration])
+        registry.all.head.getClass should be(classOf[ReportingMigration])
       }
     }
   }
 
   describe("#all") {
-    val now = new Date()
-    val oneSecondAgo = new Date(now.getTime - 1000)
+    val now = Instant.now
+    val oneSecondAgo = now.minusSeconds(1)
     val migrations = List(
       Migration("test now", now, Seq("up")),
       Migration("test just before", oneSecondAgo, Seq("up"))

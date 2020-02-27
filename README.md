@@ -321,6 +321,7 @@ Reference the acceptance spec suite for details.
 * Update Cassandra driver and test libraries 
 * Change root package to `com.evolutiongaming`
 * Require Java 8 as it is minimal for Scala 2.13
+* Use `Instant` instead of `Date`
 
 #### 4.1.0
 * Cross-compile for scala 2.11 and 2.12

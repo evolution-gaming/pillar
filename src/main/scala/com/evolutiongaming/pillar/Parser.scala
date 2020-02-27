@@ -1,7 +1,7 @@
 package com.evolutiongaming.pillar
 
 import java.io.InputStream
-import java.util.Date
+import java.time.Instant
 
 import scala.collection.mutable
 import scala.io.Source
@@ -124,11 +124,11 @@ class Parser {
         inProgress.downStages match {
           case Some(downLines) =>
             if (downLines.forall(_.isEmpty)) {
-              Migration(inProgress.description, new Date(inProgress.authoredAtAsLong), inProgress.upStages.toSeq, None)
+              Migration(inProgress.description, Instant.ofEpochMilli(inProgress.authoredAtAsLong), inProgress.upStages.toSeq, None)
             } else {
-              Migration(inProgress.description, new Date(inProgress.authoredAtAsLong), inProgress.upStages.toSeq, Some(downLines.toSeq))
+              Migration(inProgress.description, Instant.ofEpochMilli(inProgress.authoredAtAsLong), inProgress.upStages.toSeq, Some(downLines.toSeq))
             }
-          case None => Migration(inProgress.description, new Date(inProgress.authoredAtAsLong), inProgress.upStages.toSeq)
+          case None => Migration(inProgress.description, Instant.ofEpochMilli(inProgress.authoredAtAsLong), inProgress.upStages.toSeq)
         }
     }
   }

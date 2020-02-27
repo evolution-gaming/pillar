@@ -1,6 +1,6 @@
 package com.evolutiongaming.pillar
 
-import java.util.Date
+import java.time.Instant
 
 import com.datastax.driver.core.{ResultSet, Session}
 
@@ -10,7 +10,7 @@ class ReportingMigrator(reporter: Reporter, wrapped: Migrator, appliedMigrations
     createMigrationsTable(session, keyspace)
   }
 
-  override def migrate(session: Session, dateRestriction: Option[Date] = None): Unit = {
+  override def migrate(session: Session, dateRestriction: Option[Instant] = None): Unit = {
     reporter.migrating(session, dateRestriction)
     wrapped.migrate(session, dateRestriction)
   }

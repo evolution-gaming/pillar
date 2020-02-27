@@ -1,6 +1,6 @@
 package com.evolutiongaming.pillar
 
-import java.util.Date
+import java.time.Instant
 
 import com.datastax.driver.core.{ResultSet, Session}
 
@@ -15,7 +15,7 @@ object Migrator {
 }
 
 trait Migrator {
-  def migrate(session: Session, dateRestriction: Option[Date] = None): Unit
+  def migrate(session: Session, dateRestriction: Option[Instant] = None): Unit
 
   def initialize(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy): ResultSet
 

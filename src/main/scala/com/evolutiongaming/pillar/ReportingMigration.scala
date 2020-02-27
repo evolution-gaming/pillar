@@ -1,12 +1,12 @@
 package com.evolutiongaming.pillar
 
-import java.util.Date
+import java.time.Instant
 
 import com.datastax.driver.core.{ResultSet, Session}
 
 class ReportingMigration(reporter: Reporter, wrapped: Migration) extends Migration {
   val description: String = wrapped.description
-  val authoredAt: Date = wrapped.authoredAt
+  val authoredAt: Instant = wrapped.authoredAt
   val up: Seq[String] = wrapped.up
 
   override def executeUpStatement(session: Session, appliedMigrationsTableName: String): ResultSet = {

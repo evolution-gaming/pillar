@@ -1,7 +1,7 @@
 package com.evolutiongaming.pillar
 
 import java.io.{ByteArrayInputStream, FileInputStream}
-import java.util.Date
+import java.time.Instant
 
 import org.scalatest.BeforeAndAfter
 import org.scalatest.funspec.AnyFunSpec
@@ -19,7 +19,7 @@ class ParserSpec extends AnyFunSpec with BeforeAndAfter with Matchers {
 
       it("assigns authoredAt") {
         val resource = new FileInputStream(migrationPath)
-        Parser().parse(resource).authoredAt should equal(new Date(1370023262))
+        Parser().parse(resource).authoredAt should equal(Instant.ofEpochMilli(1370023262L))
       }
 
       it("assigns description") {
@@ -49,7 +49,7 @@ class ParserSpec extends AnyFunSpec with BeforeAndAfter with Matchers {
 
       it("assigns authoredAt") {
         val resource = new FileInputStream(migrationPath)
-        Parser().parse(resource).authoredAt should equal(new Date(1469630066000L))
+        Parser().parse(resource).authoredAt should equal(Instant.ofEpochMilli(1469630066000L))
       }
 
       it("assigns description") {

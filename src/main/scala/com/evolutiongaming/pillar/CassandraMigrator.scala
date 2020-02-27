@@ -1,6 +1,6 @@
 package com.evolutiongaming.pillar
 
-import java.util.Date
+import java.time.Instant
 
 import com.datastax.driver.core.{ResultSet, Session}
 
@@ -9,7 +9,7 @@ object CassandraMigrator {
 }
 
 class CassandraMigrator(registry: Registry, appliedMigrationsTableName: String) extends Migrator {
-  override def migrate(session: Session, dateRestriction: Option[Date] = None): Unit = {
+  override def migrate(session: Session, dateRestriction: Option[Instant] = None): Unit = {
     val appliedMigrations = AppliedMigrations(session, registry, appliedMigrationsTableName)
     selectMigrationsToReverse(dateRestriction, appliedMigrations).foreach(_.executeDownStatement(session, appliedMigrationsTableName))
     selectMigrationsToApply(dateRestriction, appliedMigrations).foreach(_.executeUpStatement(session, appliedMigrationsTableName))
@@ -42,14 +42,14 @@ class CassandraMigrator(registry: Registry, appliedMigrationsTableName: String) 
     session.execute("DROP KEYSPACE %s".format(keyspace))
   }
 
-  private def selectMigrationsToApply(dateRestriction: Option[Date], appliedMigrations: AppliedMigrations): Seq[Migration] = {
+  private def selectMigrationsToApply(dateRestriction: Option[Instant], appliedMigrations: AppliedMigrations): Seq[Migration] = {
     (dateRestriction match {
       case None => registry.all
       case Some(cutOff) => registry.authoredBefore(cutOff)
     }).filter(!appliedMigrations.contains(_))
   }
 
-  private def selectMigrationsToReverse(dateRestriction: Option[Date], appliedMigrations: AppliedMigrations): Seq[Migration] = {
+  private def selectMigrationsToReverse(dateRestriction: Option[Instant], appliedMigrations: AppliedMigrations): Seq[Migration] = {
     (dateRestriction match {
       case None => List.empty[Migration]
       case Some(cutOff) => appliedMigrations.authoredAfter(cutOff)

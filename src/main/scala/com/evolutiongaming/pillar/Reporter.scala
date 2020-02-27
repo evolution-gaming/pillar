@@ -1,11 +1,11 @@
 package com.evolutiongaming.pillar
 
-import java.util.Date
+import java.time.Instant
 
 import com.datastax.driver.core.Session
 
 trait Reporter {
-  def migrating(session: Session, dateRestriction: Option[Date]): Unit
+  def migrating(session: Session, dateRestriction: Option[Instant]): Unit
   def applying(migration: Migration): Unit
   def reversing(migration: Migration): Unit
   def destroying(session: Session, keyspace: String): Unit
