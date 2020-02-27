@@ -42,7 +42,7 @@ rhPackage := {
         IO.copyFile(new File(resourcesDirectory, resource), new File(subdirectories("conf"), resource))
     }
     val iterationId = try { sys.env("GO_PIPELINE_COUNTER") } catch { case e: NoSuchElementException => "DEV" }
-    "fpm -f -s dir -t rpm --package %s -n pillar --version %s --iteration %s -a all --prefix /opt/pillar -C %s/staged-package/ .".format(target.value.getPath, version.value, iterationId, target.value.getPath).!
+    "fpm -f -s dir -t rpm --package %s -n pillar --version %s --iteration %s -a all --prefix /opt/pillar -C %s/staged-package/ .".format(target.value.getPath, version.value, iterationId, target.value.getPath)//.!
 
     val pkg = file("%s/pillar-%s-%s.noarch.rpm".format(target.value.getPath, version.value, iterationId))
     if(!pkg.exists()) throw new RuntimeException("Packaging failed. Check logs for fpm output.")
@@ -60,11 +60,16 @@ val dependencies = Seq(
   "ch.qos.logback" % "logback-classic" % "1.2.3" % "test"
 )
 
-lazy val root = Project(
-  id = "pillar",
-  base = file("."),
-  settings = Defaults.coreDefaultSettings ++ Sonatype.sonatypeSettings
-).settings(
+lazy val root = project
+  .in(file("."))
+  .settings(name := "pillar")
+  .settings(Defaults.coreDefaultSettings ++ Sonatype.sonatypeSettings)
+//lazy val root = Project(
+//  id = "pillar",
+//  base = file("."),
+//  settings = Defaults.coreDefaultSettings ++ Sonatype.sonatypeSettings
+//)
+  .settings(
     assemblyTestSetting,
     libraryDependencies ++= dependencies,
     name := "pillar",
@@ -73,8 +78,8 @@ lazy val root = Project(
     homepage := Some(url("https://github.com/Galeria-Kaufhof/pillar")),
     licenses := Seq("MIT license" -> url(
       "http://www.opensource.org/licenses/mit-license.php")),
-    scalaVersion := "2.12.2",
-    crossScalaVersions := Seq("2.12.2", "2.11.11", "2.10.6")
+    scalaVersion := "2.12.10",
+    crossScalaVersions := Seq("2.12.10", "2.13.1")
   )
   .settings(
     publishTo := {
