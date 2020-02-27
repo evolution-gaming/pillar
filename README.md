@@ -1,7 +1,7 @@
 # Pillar
 
-[![Gitter](https://badges.gitter.im/Galeria-Kaufhof/pillar.svg)](https://gitter.im/Galeria-Kaufhof/pillar?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
-[![Build Status](https://travis-ci.org/Galeria-Kaufhof/pillar.svg?branch=master)](https://travis-ci.org/Galeria-Kaufhof/pillar)
+[![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
+[![Build Status](https://travis-ci.org/evolution-gaming/pillar.svg?branch=master)](https://travis-ci.org/evolution-gaming/pillar)
 
 Pillar manages migrations for your [Cassandra][cassandra] data stores.
 
@@ -21,7 +21,7 @@ databases with one key difference: Pillar is completely independent from any app
 
 ### Prerequisites
 
-1. Java SE 6 runtime environment
+1. Java 8 runtime environment
 1. Cassandra 2.0 with the native CQL protocol enabled
 
 ### From Source
@@ -303,6 +303,11 @@ You can also integrate Pillar directly into your application as a library.
 Reference the acceptance spec suite for details.
 
 ### Release Notes
+
+#### 5.0.0
+* Update SBT to 1.3.8 and related SBT plugins
+* Cross-compile for only Scala 2.12 and 2.13
+* Update Cassandra driver and test libraries 
 
 #### 4.1.0
 * Cross-compile for scala 2.11 and 2.12
