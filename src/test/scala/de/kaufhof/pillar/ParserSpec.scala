@@ -1,11 +1,13 @@
 package de.kaufhof.pillar
 
-import org.scalatest.{FunSpec, BeforeAndAfter}
-import org.scalatest.Matchers
 import java.io.{ByteArrayInputStream, FileInputStream}
 import java.util.Date
 
-class ParserSpec extends FunSpec with BeforeAndAfter with Matchers {
+import org.scalatest.BeforeAndAfter
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
+
+class ParserSpec extends AnyFunSpec with BeforeAndAfter with Matchers {
   describe("#parse") {
     describe("1370028262_creates_events_table.cql") {
       val migrationPath = "src/test/resources/pillar/migrations/faker/1370028262_creates_events_table.cql"

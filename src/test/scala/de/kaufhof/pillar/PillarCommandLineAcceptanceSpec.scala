@@ -4,9 +4,11 @@ import com.datastax.driver.core.exceptions.InvalidQueryException
 import com.datastax.driver.core.querybuilder.QueryBuilder
 import com.typesafe.config.ConfigFactory
 import de.kaufhof.pillar.cli.App
-import org.scalatest.{BeforeAndAfter, FeatureSpec, GivenWhenThen, Matchers}
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.{BeforeAndAfter, GivenWhenThen}
 
-class PillarCommandLineAcceptanceSpec extends FeatureSpec
+class PillarCommandLineAcceptanceSpec extends AnyFeatureSpec
   with CassandraSpec
   with GivenWhenThen
   with BeforeAndAfter

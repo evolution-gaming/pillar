@@ -1,10 +1,11 @@
 package de.kaufhof.pillar
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers
 import java.util.Date
 
-class MigrationSpec extends FunSpec with Matchers {
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
+
+class MigrationSpec extends AnyFunSpec with Matchers {
   describe(".apply") {
     describe("without a down parameter") {
       it("returns an irreversible migration") {

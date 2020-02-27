@@ -2,9 +2,10 @@ package de.kaufhof.pillar
 
 import com.typesafe.config.ConfigException.BadValue
 import com.typesafe.config.{ConfigException, ConfigFactory}
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class ReplicationStrategySpec extends FlatSpec with Matchers {
+class ReplicationStrategySpec extends AnyFlatSpec with Matchers {
   private val configuration = ConfigFactory.load()
   private val datastore = "test"
 

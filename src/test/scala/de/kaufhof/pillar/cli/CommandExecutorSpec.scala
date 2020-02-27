@@ -5,9 +5,10 @@ import java.util.Date
 import com.datastax.driver.core.Session
 import de.kaufhof.pillar._
 import org.mockito.MockitoSugar
-import org.scalatest.{BeforeAndAfter, FunSpec}
+import org.scalatest.BeforeAndAfter
+import org.scalatest.funspec.AnyFunSpec
 
-class CommandExecutorSpec extends FunSpec with BeforeAndAfter with MockitoSugar {
+class CommandExecutorSpec extends AnyFunSpec with BeforeAndAfter with MockitoSugar {
   describe("#execute") {
     val session = mock[Session]
     val keyspace = "myks"

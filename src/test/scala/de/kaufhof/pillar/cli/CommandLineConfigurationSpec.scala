@@ -2,10 +2,10 @@ package de.kaufhof.pillar.cli
 
 import java.io.File
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class CommandLineConfigurationSpec extends FunSpec with Matchers {
+class CommandLineConfigurationSpec extends AnyFunSpec with Matchers {
   val sep = File.separator
 
   describe(".buildFromArguments") {

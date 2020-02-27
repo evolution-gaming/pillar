@@ -4,10 +4,12 @@ import java.io.{ByteArrayOutputStream, PrintStream}
 import java.util.Date
 
 import com.datastax.driver.core.Session
-import org.scalatest._
 import org.mockito.MockitoSugar
+import org.scalatest._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class PrintStreamReporterSpec extends FunSpec with MockitoSugar with Matchers with OneInstancePerTest {
+class PrintStreamReporterSpec extends AnyFunSpec with MockitoSugar with Matchers with OneInstancePerTest {
   val session = mock[Session]
   val migration = Migration("creates things table", new Date(1370489972546L), Seq("up"), Some(Seq("down")))
   val output = new ByteArrayOutputStream()

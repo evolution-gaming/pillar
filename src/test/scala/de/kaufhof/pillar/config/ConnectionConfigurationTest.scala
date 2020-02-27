@@ -1,12 +1,14 @@
 package de.kaufhof.pillar.config
 
 import com.typesafe.config.{Config, ConfigFactory}
-import org.scalatest.{BeforeAndAfter, FunSpec, Matchers}
+import org.scalatest.BeforeAndAfter
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
   * Tests for Connection Configuration.
   */
-class ConnectionConfigurationTest extends FunSpec with BeforeAndAfter with Matchers {
+class ConnectionConfigurationTest extends AnyFunSpec with BeforeAndAfter with Matchers {
   val TRUST_STORE = "javax.net.ssl.trustStore"
   val TRUST_STORE_PASSWORD = "javax.net.ssl.trustStorePassword"
   val TRUST_STORE_TYPE = "javax.net.ssl.trustStoreType"

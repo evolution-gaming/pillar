@@ -1,12 +1,14 @@
 package de.kaufhof.pillar
 
-import org.scalatest.{FunSpec, BeforeAndAfter}
-import org.scalatest.Matchers
 import java.io.File
-import org.mockito.MockitoSugar
 import java.util.Date
 
-class RegistrySpec extends FunSpec with BeforeAndAfter with Matchers with MockitoSugar {
+import org.mockito.MockitoSugar
+import org.scalatest.BeforeAndAfter
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
+
+class RegistrySpec extends AnyFunSpec with BeforeAndAfter with Matchers with MockitoSugar {
   describe(".fromDirectory") {
     describe("without a reporter parameter") {
       describe("with a directory that exists and has migration files") {

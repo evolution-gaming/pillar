@@ -1,7 +1,6 @@
 package de.kaufhof.pillar
 
 import com.datastax.driver.core.Cluster
-import com.typesafe.config.ConfigFactory
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfterAll, Suite}

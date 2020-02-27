@@ -1,10 +1,11 @@
 package de.kaufhof.pillar
 
 import com.datastax.driver.core.Session
-import org.scalatest.{FunSpec, Matchers}
 import org.mockito.MockitoSugar
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class ReportingMigrationSpec extends FunSpec with Matchers with MockitoSugar {
+class ReportingMigrationSpec extends AnyFunSpec with Matchers with MockitoSugar {
   val reporter = mock[Reporter]
   val wrapped = mock[Migration]
   val migration = new ReportingMigration(reporter, wrapped)

@@ -2,7 +2,7 @@ package de.kaufhof.pillar
 
 import com.datastax.driver.core.querybuilder.QueryBuilder
 import com.datastax.driver.core.{Metadata, Session}
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 
 trait AcceptanceAssertions extends Matchers {
   val session: Session
