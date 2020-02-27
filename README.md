@@ -43,15 +43,19 @@ The RPM installs Pillar to /opt/pillar.
 
 ### Packages
 
-Pillar is available at Maven Central under the GroupId de.kaufhof and ArtifactId pillar_2.10, pillar_2.11 or pillar_2.12. The current version of pillar is 4.1.2.
+Pillar is available at Maven Central under the GroupId `com.evolutiongaming` and ArtifactId pillar_2.12 or pillar_2.13. The current version of pillar is 5.0.0
 
 #### sbt
 
-  libraryDependencies += "de.kaufhof" %% "pillar" % "4.1.0"
+```sbt
+  libraryDependencies += "com.evolutiongaming" %% "pillar" % "5.0.0"
+```
 
 #### Gradle
 
-  compile 'de.kaufhof:pillar_2.11:4.1.0'
+```text
+  compile 'com.evolutiongaming:pillar_2.12:5.0.0'
+```
 
 ## Usage
 
