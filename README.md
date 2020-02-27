@@ -98,7 +98,7 @@ pillar.my_keyspace {
 Or we could compile and run the jar:
 
 ```
-java -cp "slf4j-simple.jar:pillar-assembly.jar" de.kaufhof.pillar.cli.App -d "path/to/migrations" -e "prod" initialize "my_keyspace"
+java -cp "slf4j-simple.jar:pillar-assembly.jar" com.evolutiongaming.pillar.cli.App -d "path/to/migrations" -e "prod" initialize "my_keyspace"
 ```
 
 #### Migration Files
@@ -314,6 +314,7 @@ Reference the acceptance spec suite for details.
 * Update SBT to 1.3.8 and related SBT plugins
 * Cross-compile for only Scala 2.12 and 2.13
 * Update Cassandra driver and test libraries 
+* change package structure to `com.evolutiongaming`
 
 #### 4.1.0
 * Cross-compile for scala 2.11 and 2.12
