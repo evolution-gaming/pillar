@@ -51,13 +51,13 @@ rhPackage := {
 
 
 val dependencies = Seq(
-  "com.typesafe" % "config" % "1.3.1",
+  "com.typesafe" % "config" % "1.4.0",
   "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.4",
   "com.datastax.cassandra" % "cassandra-driver-core" % "3.1.4",
   "org.cassandraunit" % "cassandra-unit" % "3.1.3.2" % Test,
   "org.mockito" % "mockito-core" % "3.3.0" % Test,
   "org.scalatest" %% "scalatest" % "3.1.1" % Test,
-  "org.mockito" %% "mockito-scala" % "1.11.2" % Test,
+  "org.mockito" %% "mockito-scala" % "1.11.3" % Test,
   "com.google.guava" % "guava" % "18.0" % Test,
   "ch.qos.logback" % "logback-classic" % "1.2.3" % Test
 )
@@ -70,9 +70,9 @@ lazy val root = project
     assemblyTestSetting,
     libraryDependencies ++= dependencies,
     name := "pillar",
-    organization := "de.kaufhof",
-    version := "4.1.2",
-    homepage := Some(url("https://github.com/Galeria-Kaufhof/pillar")),
+    organization := "com.evolutiongaming/",
+    version := "5.0.0",
+    homepage := Some(url("http://github.com/evolution-gaming/pillar")),
     licenses := Seq("MIT license" -> url(
       "http://www.opensource.org/licenses/mit-license.php")),
     scalaVersion := "2.12.10",
@@ -93,10 +93,6 @@ lazy val root = project
       false
     },
     pomExtra := (
-      <scm>
-        <url>git@github.com:Galeria-Kaufhof/pillar.git</url>
-        <connection>scm:git:git@github.com:Galeria-Kaufhof/pillar.git</connection>
-      </scm>
         <developers>
           <developer>
             <id>marcopriebe</id>
