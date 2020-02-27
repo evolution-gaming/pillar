@@ -2,15 +2,15 @@ package de.kaufhof.pillar
 
 import com.datastax.driver.core.Session
 import com.datastax.driver.core.querybuilder.QueryBuilder
-import scala.collection.JavaConversions
+import scala.jdk.CollectionConverters._
 import java.util.Date
 
 object AppliedMigrations {
   def apply(session: Session, registry: Registry, appliedMigrationsTableName: String): AppliedMigrations = {
     val results = session.execute(QueryBuilder.select("authored_at", "description").from(appliedMigrationsTableName))
-    new AppliedMigrations(JavaConversions.asScalaBuffer(results.all()).map {
+    new AppliedMigrations(results.all().asScala.map {
       row => registry(MigrationKey(row.getTimestamp("authored_at"), row.getString("description")))
-    })
+    }.toSeq)
   }
 }
 

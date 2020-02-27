@@ -15,16 +15,16 @@ class PartialMigration {
   var description: String = ""
   var authoredAt: String = ""
 
-  var upStages = new mutable.MutableList[String]()
-  var downStages : Option[mutable.MutableList[String]] = None
+  var upStages = mutable.Buffer.empty[String]
+  var downStages : Option[mutable.Buffer[String]] = None
 
-  var currentUp = new mutable.MutableList[String]()
-  var currentDown: Option[mutable.MutableList[String]] = None
+  var currentUp = mutable.Buffer.empty[String]
+  var currentDown: Option[mutable.Buffer[String]] = None
 
   def rotateUp = {
     upStages += currentUp.mkString("\n")
     upStages = upStages.filterNot(line => line.isEmpty)
-    currentUp = new mutable.MutableList[String]()
+    currentUp = mutable.Buffer.empty[String]
   }
 
   def rotateDown = {
@@ -33,7 +33,7 @@ class PartialMigration {
       case Some(currentDownLines) => {
 
         downStages match {
-          case None => downStages = Some(new mutable.MutableList[String]())
+          case None => downStages = Some(mutable.Buffer.empty[String])
           case Some(_) => //do nothing
         }
 
@@ -100,14 +100,14 @@ class Parser {
             state = ParsingUp
           case MatchAttribute("down", _) =>
             inProgress.rotateUp
-            inProgress.currentDown = Some(new mutable.MutableList[String]())
+            inProgress.currentDown = Some(mutable.Buffer.empty[String])
             state = ParsingDown
           case MatchAttribute("stage", number) =>
             state match {
               case ParsingUp => state = ParsingUpStage
               case ParsingUpStage => inProgress.rotateUp
               case ParsingDown => state = ParsingDownStage
-              case ParsingDownStage => inProgress.rotateDown; inProgress.currentDown = Some(new mutable.MutableList[String]())
+              case ParsingDownStage => inProgress.rotateDown; inProgress.currentDown = Some(mutable.Buffer.empty[String])
             }
           case cql =>
             if (!cql.isEmpty) {
@@ -127,11 +127,11 @@ class Parser {
         inProgress.downStages match {
           case Some(downLines) =>
             if (downLines.filterNot(line => line.isEmpty).isEmpty) {
-              Migration(inProgress.description, new Date(inProgress.authoredAtAsLong), inProgress.upStages, None)
+              Migration(inProgress.description, new Date(inProgress.authoredAtAsLong), inProgress.upStages.toSeq, None)
             } else {
-              Migration(inProgress.description, new Date(inProgress.authoredAtAsLong), inProgress.upStages, Some(downLines))
+              Migration(inProgress.description, new Date(inProgress.authoredAtAsLong), inProgress.upStages.toSeq, Some(downLines.toSeq))
             }
-          case None => Migration(inProgress.description, new Date(inProgress.authoredAtAsLong), inProgress.upStages)
+          case None => Migration(inProgress.description, new Date(inProgress.authoredAtAsLong), inProgress.upStages.toSeq)
         }
     }
   }

@@ -5,7 +5,7 @@ import java.util.Date
 
 import com.datastax.driver.core.Session
 import org.scalatest._
-import org.scalatest.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 
 class PrintStreamReporterSpec extends FunSpec with MockitoSugar with Matchers with OneInstancePerTest {
   val session = mock[Session]

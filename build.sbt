@@ -51,24 +51,21 @@ rhPackage := {
 
 
 val dependencies = Seq(
-  "com.datastax.cassandra" % "cassandra-driver-core" % "3.1.4",
-  "org.cassandraunit" % "cassandra-unit" % "3.1.3.2" % "test",
   "com.typesafe" % "config" % "1.3.1",
-  "org.mockito" % "mockito-core" % "2.8.47" % "test",
-  "org.scalatest" %% "scalatest" % "3.0.3" % "test",
-  "com.google.guava" % "guava" % "18.0" % "test",
-  "ch.qos.logback" % "logback-classic" % "1.2.3" % "test"
+  "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.4",
+  "com.datastax.cassandra" % "cassandra-driver-core" % "3.1.4",
+  "org.cassandraunit" % "cassandra-unit" % "3.1.3.2" % Test,
+  "org.mockito" % "mockito-core" % "3.3.0" % Test,
+  "org.scalatest" %% "scalatest" % "3.1.1" % Test,
+  "org.mockito" %% "mockito-scala" % "1.11.2" % Test,
+  "com.google.guava" % "guava" % "18.0" % Test,
+  "ch.qos.logback" % "logback-classic" % "1.2.3" % Test
 )
 
 lazy val root = project
   .in(file("."))
   .settings(name := "pillar")
   .settings(Defaults.coreDefaultSettings ++ Sonatype.sonatypeSettings)
-//lazy val root = Project(
-//  id = "pillar",
-//  base = file("."),
-//  settings = Defaults.coreDefaultSettings ++ Sonatype.sonatypeSettings
-//)
   .settings(
     assemblyTestSetting,
     libraryDependencies ++= dependencies,
