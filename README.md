@@ -19,6 +19,9 @@ databases with one key difference: Pillar is completely independent from any app
 [ar]:https://github.com/rails/rails/tree/master/activerecord
 [evolutions]:http://www.playframework.com/documentation/2.0/Evolutions
 
+Forked from https://github.com/Galeria-Kaufhof/pillar as that project is not maintained any more.
+As many upgrades are done, some of functionality we do not reqire, has been dropped.  
+
 ## Installation
 
 ### Prerequisites
@@ -311,10 +314,13 @@ Reference the acceptance spec suite for details.
 ### Release Notes
 
 #### 5.0.0
+* A lot of drastic changes due to forking stale project
+* Remove support for Red Hat packages
 * Update SBT to 1.3.8 and related SBT plugins
 * Cross-compile for only Scala 2.12 and 2.13
 * Update Cassandra driver and test libraries 
-* change package structure to `com.evolutiongaming`
+* Change root package to `com.evolutiongaming`
+* Require Java 8 as it is minimal for Scala 2.13
 
 #### 4.1.0
 * Cross-compile for scala 2.11 and 2.12

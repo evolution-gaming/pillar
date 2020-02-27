@@ -3,7 +3,6 @@ import sbt._
 
 lazy val root = project
   .in(file("."))
-//  .settings(Defaults.coreDefaultSettings)
   .settings(
     name := "pillar",
     scalaVersion := crossScalaVersions.value.head,
