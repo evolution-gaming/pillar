@@ -1,9 +1,7 @@
 package de.kaufhof.pillar
 
-import java.util.Map.Entry
-
 import com.typesafe.config.ConfigException.BadValue
-import com.typesafe.config.{Config, ConfigException, ConfigObject, ConfigValue}
+import com.typesafe.config.{Config, ConfigException, ConfigObject}
 
 import scala.util.{Failure, Success, Try}
 
@@ -44,14 +42,14 @@ object ReplicationStrategyBuilder {
           SimpleStrategy(repFactor)
 
         case "NetworkTopologyStrategy" =>
-          import scala.collection.JavaConverters._
+          import scala.jdk.CollectionConverters._
           val dcConfigBuffer = configuration
             .getObjectList(s"pillar.$dataStoreName.$environment.replicationFactor")
             .asScala
 
           val dcBuffer = for {
             item: ConfigObject <- dcConfigBuffer
-            entry: Entry[String, ConfigValue] <- item.entrySet().asScala
+            entry <- item.entrySet().asScala
             dcName = entry.getKey
             dcRepFactor = entry.getValue.unwrapped().toString.toInt
           } yield (dcName, dcRepFactor)
@@ -66,7 +64,7 @@ object ReplicationStrategyBuilder {
           throw new ReplicationStrategyConfigError(s"$repStrategy is not a valid replication strategy.")
       }
 
-      case Failure(e: ConfigException.Missing) => SimpleStrategy()
+      case Failure(_: ConfigException.Missing) => SimpleStrategy()
       case Failure(e) => throw e
     }
   } catch {

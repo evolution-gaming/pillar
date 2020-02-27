@@ -3,8 +3,8 @@ package de.kaufhof.pillar.config
 import com.datastax.driver.core.{AuthProvider, PlainTextAuthProvider}
 import com.typesafe.config.{Config, ConfigFactory, ConfigValueType}
 
+import scala.jdk.CollectionConverters._
 import scala.language.implicitConversions
-import scala.collection.JavaConverters._
 
 /**
   * Configuration for connection to cassandra.
@@ -88,7 +88,7 @@ case class KeyStoreConfig(keyStorePath: String, keyStorePassword: String, keySto
     System.setProperty("javax.net.ssl.keyStore", keyStorePath)
     System.setProperty("javax.net.ssl.keyStorePassword", keyStorePassword)
     System.setProperty("javax.net.ssl.keyStoreType", keyStoreType)
-
+    ()
   }
 }
 

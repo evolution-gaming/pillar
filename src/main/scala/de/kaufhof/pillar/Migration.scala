@@ -1,8 +1,9 @@
 package de.kaufhof.pillar
 
 import java.util.Date
-import com.datastax.driver.core.Session
+
 import com.datastax.driver.core.querybuilder.QueryBuilder
+import com.datastax.driver.core.{ResultSet, Session}
 
 object Migration {
   def apply(description: String, authoredAt: Date, up: Seq[String]): Migration = {
@@ -34,14 +35,14 @@ trait Migration {
     authoredAt.compareTo(date) <= 0
   }
 
-  def executeUpStatement(session: Session, appliedMigrationsTableName: String) {
+  def executeUpStatement(session: Session, appliedMigrationsTableName: String): ResultSet = {
     up.foreach(session.execute)
     insertIntoAppliedMigrations(session, appliedMigrationsTableName)
   }
 
-  def executeDownStatement(session: Session, appliedMigrationsTableName: String)
+  def executeDownStatement(session: Session, appliedMigrationsTableName: String): ResultSet
 
-  protected def deleteFromAppliedMigrations(session: Session, appliedMigrationsTableName: String) {
+  protected def deleteFromAppliedMigrations(session: Session, appliedMigrationsTableName: String): ResultSet = {
     session.execute(QueryBuilder.
       delete().
       from(appliedMigrationsTableName).
@@ -50,7 +51,7 @@ trait Migration {
     )
   }
 
-  private def insertIntoAppliedMigrations(session: Session,appliedMigrationsTableName: String) {
+  private def insertIntoAppliedMigrations(session: Session,appliedMigrationsTableName: String): ResultSet = {
     session.execute(QueryBuilder.
       insertInto(appliedMigrationsTableName).
       value("authored_at", authoredAt).
@@ -61,19 +62,19 @@ trait Migration {
 }
 
 class IrreversibleMigration(val description: String, val authoredAt: Date, val up: Seq[String]) extends Migration {
-  def executeDownStatement(session: Session, appliedMigrationsTableName: String) {
+  def executeDownStatement(session: Session, appliedMigrationsTableName: String): ResultSet = {
     throw new IrreversibleMigrationException(this)
   }
 }
 
 class ReversibleMigrationWithNoOpDown(val description: String, val authoredAt: Date, val up: Seq[String]) extends Migration {
-  def executeDownStatement(session: Session, appliedMigrationsTableName: String) {
+  def executeDownStatement(session: Session, appliedMigrationsTableName: String): ResultSet = {
     deleteFromAppliedMigrations(session, appliedMigrationsTableName)
   }
 }
 
 class ReversibleMigration(val description: String, val authoredAt: Date, val up: Seq[String], val down: Seq[String]) extends Migration {
-  def executeDownStatement(session: Session, appliedMigrationsTableName: String) {
+  def executeDownStatement(session: Session, appliedMigrationsTableName: String): ResultSet = {
     down.foreach(session.execute)
     deleteFromAppliedMigrations(session, appliedMigrationsTableName)
   }

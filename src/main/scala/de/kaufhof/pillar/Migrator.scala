@@ -2,7 +2,7 @@ package de.kaufhof.pillar
 
 import java.util.Date
 
-import com.datastax.driver.core.Session
+import com.datastax.driver.core.{ResultSet, Session}
 
 object Migrator {
   def apply(registry: Registry, appliedMigrationsTableName: String): Migrator = {
@@ -15,13 +15,13 @@ object Migrator {
 }
 
 trait Migrator {
-  def migrate(session: Session, dateRestriction: Option[Date] = None)
+  def migrate(session: Session, dateRestriction: Option[Date] = None): Unit
 
-  def initialize(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy)
+  def initialize(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy): ResultSet
 
-  def createKeyspace(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy)
+  def createKeyspace(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy): ResultSet
 
-  def createMigrationsTable(session: Session, keyspace: String)
+  def createMigrationsTable(session: Session, keyspace: String): ResultSet
 
-  def destroy(session: Session, keyspace: String)
+  def destroy(session: Session, keyspace: String): ResultSet
 }

@@ -62,16 +62,16 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
     try {
       session.execute("DROP KEYSPACE %s".format(keyspaceName))
     } catch {
-      case ok: InvalidQueryException =>
+      case _: InvalidQueryException => // ok
     }
   }
 
-  feature("The operator can initialize a keyspace") {
+  Feature("The operator can initialize a keyspace") {
     info("As an application operator")
     info("I want to initialize a Cassandra keyspace")
     info("So that I can manage the keyspace schema")
 
-    scenario("initialize a non-existent keyspace") {
+    Scenario("initialize a non-existent keyspace") {
       Given("a non-existent keyspace")
 
       When("the migrator initializes the keyspace")
@@ -81,7 +81,7 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
       assertEmptyAppliedMigrationsTable()
     }
 
-    scenario("initialize a non-existent keyspace with a non default applied_migrations table") {
+    Scenario("initialize a non-existent keyspace with a non default applied_migrations table") {
       Given("a non-existent keyspace")
 
       When("the migrator initializes the keyspace")
@@ -92,7 +92,7 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
       assertEmptyAppliedMigrationsTable("applied_migrations_non_default")
     }
 
-    scenario("initialize an existing keyspace without a applied_migrations column family") {
+    Scenario("initialize an existing keyspace without a applied_migrations column family") {
       Given("an existing keyspace")
       session.execute(s"CREATE KEYSPACE $keyspaceName WITH replication = ${simpleStrategy.cql}")
 
@@ -103,7 +103,7 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
       assertEmptyAppliedMigrationsTable()
     }
 
-    scenario("initialize an existing keyspace with a applied_migrations column family") {
+    Scenario("initialize an existing keyspace with a applied_migrations column family") {
       Given("an existing keyspace")
       migrator.initialize(session, keyspaceName, simpleStrategy)
 
@@ -114,12 +114,12 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
     }
   }
 
-  feature("The operator can destroy a keyspace") {
+  Feature("The operator can destroy a keyspace") {
     info("As an application operator")
     info("I want to destroy a Cassandra keyspace")
     info("So that I can clean up automated tasks")
 
-    scenario("destroy a keyspace") {
+    Scenario("destroy a keyspace") {
       Given("an existing keyspace")
       migrator.initialize(session, keyspaceName, simpleStrategy)
 
@@ -130,7 +130,7 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
       assertKeyspaceDoesNotExist()
     }
 
-    scenario("destroy a bad keyspace") {
+    Scenario("destroy a bad keyspace") {
       Given("a datastore with a non-existing keyspace")
 
       When("the migrator destroys the keyspace")
@@ -142,12 +142,12 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
     }
   }
 
-  feature("The operator can apply migrations") {
+  Feature("The operator can apply migrations") {
     info("As an application operator")
     info("I want to migrate a Cassandra keyspace from an older version of the schema to a newer version")
     info("So that I can run an application using the schema")
 
-    scenario("all migrations") {
+    Scenario("all migrations") {
       Given("an initialized, empty, keyspace")
       migrator.initialize(session, keyspaceName, simpleStrategy)
 
@@ -167,7 +167,7 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
       session.execute(QueryBuilder.select().from(keyspaceName, "applied_migrations")).all().size() should equal(4)
     }
 
-    scenario("all migrations for a non default applied migrations table name") {
+    Scenario("all migrations for a non default applied migrations table name") {
       Given("an initialized, empty, keyspace")
       val migrator = Migrator(registry, "applied_migrations_non_default")
       migrator.initialize(session, keyspaceName, simpleStrategy)
@@ -188,7 +188,7 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
       session.execute(QueryBuilder.select().from(keyspaceName, "applied_migrations_non_default")).all().size() should equal(4)
     }
 
-    scenario("some migrations") {
+    Scenario("some migrations") {
       Given("an initialized, empty, keyspace")
       migrator.initialize(session, keyspaceName, simpleStrategy)
 
@@ -205,7 +205,7 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
       session.execute(QueryBuilder.select().from(keyspaceName, "applied_migrations")).all().size() should equal(1)
     }
 
-    scenario("skip previously applied migration") {
+    Scenario("skip previously applied migration") {
       Given("an initialized keyspace")
       migrator.initialize(session, keyspaceName, simpleStrategy)
 
@@ -219,12 +219,12 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
     }
   }
 
-  feature("The operator can reverse migrations") {
+  Feature("The operator can reverse migrations") {
     info("As an application operator")
     info("I want to migrate a Cassandra keyspace from a newer version of the schema to an older version")
     info("So that I can run an application using the schema")
 
-    scenario("reversible previously applied migration") {
+    Scenario("reversible previously applied migration") {
       Given("an initialized keyspace")
       migrator.initialize(session, keyspaceName, simpleStrategy)
 
@@ -250,7 +250,7 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
       session.execute(query).all().size() should equal(0)
     }
 
-    scenario("irreversible previously applied migration") {
+    Scenario("irreversible previously applied migration") {
       Given("an initialized keyspace")
       migrator.initialize(session, keyspaceName, simpleStrategy)
 

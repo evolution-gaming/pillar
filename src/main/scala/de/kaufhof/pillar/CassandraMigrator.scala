@@ -2,30 +2,30 @@ package de.kaufhof.pillar
 
 import java.util.Date
 
-import com.datastax.driver.core.Session
+import com.datastax.driver.core.{ResultSet, Session}
 
 object CassandraMigrator {
   val appliedMigrationsTableNameDefault = "applied_migrations"
 }
 
 class CassandraMigrator(registry: Registry, appliedMigrationsTableName: String) extends Migrator {
-  override def migrate(session: Session, dateRestriction: Option[Date] = None) {
+  override def migrate(session: Session, dateRestriction: Option[Date] = None): Unit = {
     val appliedMigrations = AppliedMigrations(session, registry, appliedMigrationsTableName)
     selectMigrationsToReverse(dateRestriction, appliedMigrations).foreach(_.executeDownStatement(session, appliedMigrationsTableName))
     selectMigrationsToApply(dateRestriction, appliedMigrations).foreach(_.executeUpStatement(session, appliedMigrationsTableName))
   }
 
   override def initialize(session: Session, keyspace: String,
-                          replicationStrategy: ReplicationStrategy = SimpleStrategy()) {
+                          replicationStrategy: ReplicationStrategy = SimpleStrategy()): ResultSet = {
     createKeyspace(session, keyspace, replicationStrategy)
     createMigrationsTable(session, keyspace)
   }
 
-  override def createKeyspace(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy = SimpleStrategy()) = {
+  override def createKeyspace(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy = SimpleStrategy()): ResultSet = {
     session.execute(s"CREATE KEYSPACE IF NOT EXISTS $keyspace WITH replication = ${replicationStrategy.cql}")
   }
 
-  override def createMigrationsTable(session: Session, keyspace: String) = {
+  override def createMigrationsTable(session: Session, keyspace: String): ResultSet = {
     session.execute(
       """
         | CREATE TABLE IF NOT EXISTS %s.%s (
@@ -38,7 +38,7 @@ class CassandraMigrator(registry: Registry, appliedMigrationsTableName: String) 
     )
   }
 
-  override def destroy(session: Session, keyspace: String) {
+  override def destroy(session: Session, keyspace: String): ResultSet = {
     session.execute("DROP KEYSPACE %s".format(keyspace))
   }
 

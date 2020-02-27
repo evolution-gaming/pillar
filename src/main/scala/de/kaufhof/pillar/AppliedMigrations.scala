@@ -1,9 +1,11 @@
 package de.kaufhof.pillar
 
+import java.util.Date
+
 import com.datastax.driver.core.Session
 import com.datastax.driver.core.querybuilder.QueryBuilder
+
 import scala.jdk.CollectionConverters._
-import java.util.Date
 
 object AppliedMigrations {
   def apply(session: Session, registry: Registry, appliedMigrationsTableName: String): AppliedMigrations = {

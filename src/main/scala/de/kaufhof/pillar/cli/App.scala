@@ -2,7 +2,7 @@ package de.kaufhof.pillar.cli
 
 import java.io.File
 
-import com.datastax.driver.core.{ConsistencyLevel, QueryOptions, Cluster}
+import com.datastax.driver.core.{Cluster, ConsistencyLevel, QueryOptions}
 import com.typesafe.config.{Config, ConfigFactory}
 import de.kaufhof.pillar._
 import de.kaufhof.pillar.config.ConnectionConfiguration
@@ -13,7 +13,7 @@ object App {
     new App(reporter, configuration)
   }
 
-  def main(arguments: Array[String]) {
+  def main(arguments: Array[String]): Unit = {
     try {
       App().run(arguments)
     } catch {
@@ -28,7 +28,7 @@ object App {
 
 class App(reporter: Reporter, configuration: Config) {
 
-  def run(arguments: Array[String]) {
+  def run(arguments: Array[String]): Unit = {
     val commandLineConfiguration = CommandLineConfiguration.buildFromArguments(arguments)
     val registry = Registry.fromDirectory(new File(commandLineConfiguration.migrationsDirectory, commandLineConfiguration.dataStore), reporter)
     val dataStoreName = commandLineConfiguration.dataStore

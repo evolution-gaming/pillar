@@ -33,16 +33,16 @@ class PillarCommandLineAcceptanceSpec extends AnyFeatureSpec
     try {
       session.execute("DROP KEYSPACE %s".format(keyspaceName))
     } catch {
-      case ok: InvalidQueryException =>
+      case _: InvalidQueryException => // ok
     }
   }
 
-  feature("The operator can initialize a keyspace") {
+  Feature("The operator can initialize a keyspace") {
     info("As an application operator")
     info("I want to initialize a Cassandra keyspace")
     info("So that I can manage the keyspace schema")
 
-    scenario("initialize a non-existent keyspace") {
+    Scenario("initialize a non-existent keyspace") {
       Given("a non-existent keyspace")
 
       When("the migrator initializes the keyspace")
@@ -53,12 +53,12 @@ class PillarCommandLineAcceptanceSpec extends AnyFeatureSpec
     }
   }
 
-  feature("The operator can apply migrations") {
+  Feature("The operator can apply migrations") {
     info("As an application operator")
     info("I want to migrate a Cassandra keyspace from an older version of the schema to a newer version")
     info("So that I can run an application using the schema")
 
-    scenario("all migrations") {
+    Scenario("all migrations") {
       Given("an initialized, empty, keyspace")
       App(configuration = config).run(Array("-e", environment, "initialize", dataStoreName))
 

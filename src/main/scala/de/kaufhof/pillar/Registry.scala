@@ -1,7 +1,7 @@
 package de.kaufhof.pillar
 
+import java.io.{File, FileInputStream}
 import java.util.Date
-import java.io.{FileInputStream, File}
 
 object Registry {
   def apply(migrations: Seq[Migration]): Registry = {

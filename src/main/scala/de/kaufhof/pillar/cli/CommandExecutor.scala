@@ -10,12 +10,12 @@ object CommandExecutor {
   def apply(): CommandExecutor = new CommandExecutor()
 }
 
-class CommandExecutor(implicit val migratorConstructor: ((Registry, Reporter, String) => Migrator)) {
-  def execute(command: Command, reporter: Reporter) {
+class CommandExecutor(implicit val migratorConstructor: (Registry, Reporter, String) => Migrator) {
+  def execute(command: Command, reporter: Reporter): Unit = {
     val migrator = migratorConstructor(command.registry, reporter, command.appliedMigrationsTableName)
 
     command.action match {
-      case Initialize => migrator.initialize(command.session, command.keyspace, command.replicationStrategy)
+      case Initialize => migrator.initialize(command.session, command.keyspace, command.replicationStrategy); ()
       case Migrate => migrator.migrate(command.session, command.timeStampOption.map(new Date(_)))
     }
   }

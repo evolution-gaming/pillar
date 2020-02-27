@@ -5,10 +5,10 @@ import java.util.Date
 import com.datastax.driver.core.Session
 
 trait Reporter {
-  def migrating(session: Session, dateRestriction: Option[Date])
-  def applying(migration: Migration)
-  def reversing(migration: Migration)
-  def destroying(session: Session, keyspace: String)
-  def creatingKeyspace(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy)
-  def creatingMigrationsTable(session: Session, keyspace: String, appliedMigrationsTableName: String)
+  def migrating(session: Session, dateRestriction: Option[Date]): Unit
+  def applying(migration: Migration): Unit
+  def reversing(migration: Migration): Unit
+  def destroying(session: Session, keyspace: String): Unit
+  def creatingKeyspace(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy): Unit
+  def creatingMigrationsTable(session: Session, keyspace: String, appliedMigrationsTableName: String): Unit
 }
