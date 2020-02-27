@@ -32,17 +32,8 @@ As many upgrades are done, some of functionality we do not reqire, has been drop
 ### From Source
 
 This method requires [Simple Build Tool (sbt)][sbt].
-Building an RPM can be done via sbt-native-packager.
-
-    % sbt assembly   # builds just the jar file in the target directory
-
-    % sbt rpm:packageBin # builds the RPM in the target directory
-    % sudo rpm -i target/pillar-<version>.noarch.rpm
-
-The RPM installs Pillar to /opt/pillar.
 
 [sbt]:http://www.scala-sbt.org
-[sbt-native-packager]:http://sbt-native-packager.readthedocs.io/en/latest/
 
 ### Packages
 
