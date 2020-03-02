@@ -7,7 +7,7 @@ lazy val root = project
     name := "pillar",
     scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq("2.13.1", "2.12.10"),
-    licenses := Seq("MIT license" -> url("http://www.opensource.org/licenses/mit-license.php")),
+    licenses := Seq(("MIT", url("https://opensource.org/licenses/MIT"))),
     resolvers += Resolver.bintrayRepo("evolutiongaming", "maven"),
     libraryDependencies ++= dependencies,
 
