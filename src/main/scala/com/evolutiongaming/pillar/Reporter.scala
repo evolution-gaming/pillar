@@ -2,8 +2,6 @@ package com.evolutiongaming.pillar
 
 import java.time.Instant
 
-import com.datastax.driver.core.Session
-
 trait Reporter {
   def migrating(session: Session, dateRestriction: Option[Instant]): Unit
   def applying(migration: Migration): Unit

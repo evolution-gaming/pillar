@@ -2,7 +2,7 @@ package com.evolutiongaming.pillar
 
 import java.time.Instant
 
-import com.datastax.driver.core.{ResultSet, Session}
+import com.datastax.driver.core.ResultSet
 
 class ReportingMigration(reporter: Reporter, wrapped: Migration) extends Migration {
   val description: String = wrapped.description

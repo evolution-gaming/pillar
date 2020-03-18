@@ -2,7 +2,7 @@ package com.evolutiongaming.pillar
 
 import java.time.Instant
 
-import com.datastax.driver.core.{ResultSet, Session}
+import com.datastax.driver.core.ResultSet
 
 class ReportingMigrator(reporter: Reporter, wrapped: Migrator, appliedMigrationsTableName: String) extends Migrator {
   override def initialize(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy): ResultSet = {

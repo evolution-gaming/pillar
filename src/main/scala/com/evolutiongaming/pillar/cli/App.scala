@@ -2,7 +2,7 @@ package com.evolutiongaming.pillar.cli
 
 import java.io.File
 
-import com.datastax.driver.core.{Cluster, ConsistencyLevel, QueryOptions}
+import com.datastax.driver.core.{Cluster, QueryOptions}
 import com.evolutiongaming.pillar.config.ConnectionConfiguration
 import com.evolutiongaming.pillar.{PrintStreamReporter, ReplicationStrategyBuilder, Reporter, _}
 import com.typesafe.config.{Config, ConfigFactory}
@@ -38,7 +38,7 @@ class App(reporter: Reporter, configuration: Config) {
 
     val cluster: Cluster = createCluster(cassandraConfiguration)
 
-    val session = commandLineConfiguration.command match {
+    val cassandraSession = commandLineConfiguration.command match {
       case Initialize => cluster.connect()
       case _ => cluster.connect(cassandraConfiguration.keyspace)
     }
@@ -51,24 +51,24 @@ class App(reporter: Reporter, configuration: Config) {
 
     val command = Command(
       commandLineConfiguration.command,
-      session,
+      new Session(cassandraSession, cassandraConfiguration.consistencyLevel),
       cassandraConfiguration.keyspace,
       commandLineConfiguration.timeStampOption,
       registry,
       replicationOptions,
-      cassandraConfiguration.appliedMigrationsTableName
+      cassandraConfiguration.appliedMigrationsTableName,
     )
 
     try {
       CommandExecutor().execute(command, reporter)
     } finally {
-      session.close()
+      cassandraSession.close()
     }
   }
 
   private def createCluster(connectionConfiguration:ConnectionConfiguration): Cluster = {
     val queryOptions = new QueryOptions()
-    queryOptions.setConsistencyLevel(ConsistencyLevel.QUORUM)
+    queryOptions.setConsistencyLevel(connectionConfiguration.consistencyLevel)
 
     val clusterBuilder = Cluster.builder()
       .addContactPoints(connectionConfiguration.seedAddress:_*)

@@ -156,7 +156,7 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
       Given("a migration that creates a views table")
 
       When("the migrator migrates the schema")
-      migrator.migrate(cluster.connect(keyspaceName))
+      migrator.migrate(session(keyspaceName))
 
       Then("the keyspace contains the events table")
       session.execute(QueryBuilder.select().from(keyspaceName, "events")).all().size() should equal(0)
@@ -177,7 +177,7 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
       Given("a migration that creates a views table")
 
       When("the migrator migrates the schema")
-      migrator.migrate(cluster.connect(keyspaceName))
+      migrator.migrate(session(keyspaceName))
 
       Then("the keyspace contains the events table")
       session.execute(QueryBuilder.select().from(keyspaceName, "events")).all().size() should equal(0)
@@ -197,7 +197,7 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
       Given("a migration that creates a views table")
 
       When("the migrator migrates with a cut off date")
-      migrator.migrate(cluster.connect(keyspaceName), Some(migrations.head.authoredAt))
+      migrator.migrate(session(keyspaceName), Some(migrations.head.authoredAt))
 
       Then("the keyspace contains the events table")
       session.execute(QueryBuilder.select().from(keyspaceName, "events")).all().size() should equal(0)
@@ -211,10 +211,10 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
       migrator.initialize(session, keyspaceName, simpleStrategy)
 
       Given("a set of migrations applied in the past")
-      migrator.migrate(cluster.connect(keyspaceName))
+      migrator.migrate(session(keyspaceName))
 
       When("the migrator applies migrations")
-      migrator.migrate(cluster.connect(keyspaceName))
+      migrator.migrate(session(keyspaceName))
 
       Then("the migration completes successfully")
     }
@@ -230,10 +230,10 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
       migrator.initialize(session, keyspaceName, simpleStrategy)
 
       Given("a set of migrations applied in the past")
-      migrator.migrate(cluster.connect(keyspaceName))
+      migrator.migrate(session(keyspaceName))
 
       When("the migrator migrates with a cut off date")
-      migrator.migrate(cluster.connect(keyspaceName), Some(migrations.head.authoredAt))
+      migrator.migrate(session(keyspaceName), Some(migrations.head.authoredAt))
 
       Then("the migrator reverses the reversible migration")
       val thrown = intercept[InvalidQueryException] {
@@ -256,11 +256,11 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
       migrator.initialize(session, keyspaceName, simpleStrategy)
 
       Given("a set of migrations applied in the past")
-      migrator.migrate(cluster.connect(keyspaceName))
+      migrator.migrate(session(keyspaceName))
 
       When("the migrator migrates with a cut off date")
       val thrown = intercept[IrreversibleMigrationException] {
-        migrator.migrate(cluster.connect(keyspaceName), Some(Instant.ofEpochMilli(0)))
+        migrator.migrate(session(keyspaceName), Some(Instant.ofEpochMilli(0)))
       }
 
       Then("the migrator reverses the reversible migrations")

@@ -4,7 +4,7 @@ import java.time.Instant
 import java.util.Date
 
 import com.datastax.driver.core.querybuilder.QueryBuilder
-import com.datastax.driver.core.{ResultSet, Session}
+import com.datastax.driver.core.ResultSet
 
 object Migration {
   def apply(description: String, authoredAt: Instant, up: Seq[String]): Migration = {

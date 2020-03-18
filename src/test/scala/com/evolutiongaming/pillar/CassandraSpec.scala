@@ -1,6 +1,6 @@
 package com.evolutiongaming.pillar
 
-import com.datastax.driver.core.Cluster
+import com.datastax.driver.core.{Cluster, ConsistencyLevel}
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfterAll, Suite}
@@ -26,7 +26,12 @@ trait CassandraSpec extends ScalaFutures with BeforeAndAfterAll {
     Cluster.builder().addContactPoint("127.0.0.1").withPort(port).build()
   }
 
-  lazy val session = cluster.connect()
+  //Appropriate consistency level for embedded Cassandra instance
+  private val EmbeddedConsistencyLevel = ConsistencyLevel.LOCAL_ONE
+
+  lazy val session = new Session(cluster.connect(), EmbeddedConsistencyLevel)
+
+  protected def session(keyspace: String) = new Session(cluster.connect(keyspace), EmbeddedConsistencyLevel)
 
   protected def startEmbeddedCassandra(): Unit = try {
     //Start the Cassandra Instance
