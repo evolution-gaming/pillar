@@ -32,7 +32,7 @@ class ConnectionConfiguration(dataStoreName: String, environment: String, appCon
   val consistencyLevel: ConsistencyLevel = connectionConfig
     .getOptionalString("consistency-level")
     .map(ConsistencyLevel.valueOf)
-    .getOrElse(ConsistencyLevel.LOCAL_QUORUM)
+    .getOrElse(ConsistencyLevel.QUORUM)
 }
 
 class OptionalConfig(config: Config) {
