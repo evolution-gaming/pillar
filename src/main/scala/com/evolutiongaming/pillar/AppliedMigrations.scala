@@ -2,7 +2,6 @@ package com.evolutiongaming.pillar
 
 import java.time.Instant
 
-import com.datastax.driver.core.Session
 import com.datastax.driver.core.querybuilder.QueryBuilder
 
 import scala.jdk.CollectionConverters._

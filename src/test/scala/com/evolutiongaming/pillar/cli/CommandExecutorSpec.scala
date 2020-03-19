@@ -2,7 +2,6 @@ package com.evolutiongaming.pillar.cli
 
 import java.time.Instant
 
-import com.datastax.driver.core.Session
 import com.evolutiongaming.pillar._
 import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfter

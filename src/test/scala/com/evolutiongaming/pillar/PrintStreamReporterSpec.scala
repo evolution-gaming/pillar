@@ -3,7 +3,6 @@ package com.evolutiongaming.pillar
 import java.io.{ByteArrayOutputStream, PrintStream}
 import java.time.Instant
 
-import com.datastax.driver.core.Session
 import org.mockito.MockitoSugar
 import org.scalatest._
 import org.scalatest.funspec.AnyFunSpec

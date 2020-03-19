@@ -1,6 +1,5 @@
 package com.evolutiongaming.pillar
 
-import com.datastax.driver.core.Session
 import org.mockito.MockitoSugar
 import org.scalatest.funspec.AnyFunSpec
 

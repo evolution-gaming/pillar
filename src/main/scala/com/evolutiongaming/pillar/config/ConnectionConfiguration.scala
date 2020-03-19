@@ -1,6 +1,6 @@
 package com.evolutiongaming.pillar.config
 
-import com.datastax.driver.core.{AuthProvider, PlainTextAuthProvider}
+import com.datastax.driver.core.{AuthProvider, ConsistencyLevel, PlainTextAuthProvider}
 import com.typesafe.config.{Config, ConfigFactory, ConfigValueType}
 
 import scala.jdk.CollectionConverters._
@@ -29,6 +29,10 @@ class ConnectionConfiguration(dataStoreName: String, environment: String, appCon
 
   val sslConfig: Option[SslConfig] = SslConfig(connectionConfig.getOptionalConfig("ssl-options"))
 
+  val consistencyLevel: ConsistencyLevel = connectionConfig
+    .getOptionalString("consistency-level")
+    .map(ConsistencyLevel.valueOf)
+    .getOrElse(ConsistencyLevel.QUORUM)
 }
 
 class OptionalConfig(config: Config) {

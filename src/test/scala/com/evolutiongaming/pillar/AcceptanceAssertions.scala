@@ -1,7 +1,7 @@
 package com.evolutiongaming.pillar
 
 import com.datastax.driver.core.querybuilder.QueryBuilder
-import com.datastax.driver.core.{Metadata, Session}
+import com.datastax.driver.core.Metadata
 import org.scalatest.Assertion
 import org.scalatest.matchers.should.Matchers
 

@@ -304,6 +304,9 @@ Reference the acceptance spec suite for details.
 
 ### Release Notes
 
+#### 5.0.1
+* Consistency level can now be explicitly configured (the default is still `QUORUM`)
+
 #### 5.0.0
 * A lot of drastic changes due to forking stale project
 * Remove support for Red Hat packages

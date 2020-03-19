@@ -3,8 +3,6 @@ package com.evolutiongaming.pillar
 import java.io.PrintStream
 import java.time.Instant
 
-import com.datastax.driver.core.Session
-
 class PrintStreamReporter(stream: PrintStream) extends Reporter {
 
   override def migrating(session: Session, dateRestriction: Option[Instant]): Unit = {
