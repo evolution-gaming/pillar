@@ -5,11 +5,7 @@
 
 name: Scala CI
 
-on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+on: [push, pull_request]
 
 permissions:
   contents: read
@@ -18,6 +14,12 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        scala:
+          - 2.13.1
+          - 2.12.11
 
     steps:
     - uses: actions/checkout@v4
