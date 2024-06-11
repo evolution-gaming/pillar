@@ -30,6 +30,6 @@ val dependencies = Seq(
   "org.mockito" % "mockito-core" % "5.11.0" % Test,
   "org.scalatest" %% "scalatest" % "3.2.18" % Test,
   "org.mockito" %% "mockito-scala" % "1.17.31" % Test,
-  "com.google.guava" % "guava" % "33.2.1-jre" % Test,
+  "com.google.guava" % "guava" % "21.0" % Test,
   "ch.qos.logback" % "logback-classic" % "1.5.6" % Test
 )
