@@ -2,7 +2,8 @@ package com.evolutiongaming.pillar.cli
 
 import java.io.File
 
-import com.datastax.driver.core.{Cluster, QueryOptions}
+import com.datastax.driver.core.Cluster
+import com.datastax.oss.protocol.internal.request.query.QueryOptions
 import com.evolutiongaming.pillar.config.ConnectionConfiguration
 import com.evolutiongaming.pillar.{PrintStreamReporter, ReplicationStrategyBuilder, Reporter, _}
 import com.typesafe.config.{Config, ConfigFactory}

@@ -22,14 +22,16 @@ lazy val root = project
     releaseCrossBuild := true,
   )
 
+Compile / scalacOptions ++= Seq("-language:implicitConversions")
+
 val dependencies = Seq(
   "com.typesafe" % "config" % "1.4.3",
   "org.scala-lang.modules" %% "scala-collection-compat" % "2.12.0",
-  "com.datastax.cassandra" % "cassandra-driver-core" % "3.8.0",
-  "org.cassandraunit" % "cassandra-unit" % "3.11.2.0" % Test,
+  "com.datastax.oss" % "java-driver-core" % "4.17.0",
+  "org.cassandraunit" % "cassandra-unit" % "4.3.1.0" % Test,
   "org.mockito" % "mockito-core" % "5.11.0" % Test,
   "org.scalatest" %% "scalatest" % "3.2.18" % Test,
   "org.mockito" %% "mockito-scala" % "1.17.31" % Test,
-  "com.google.guava" % "guava" % "21.0" % Test,
+  "com.google.guava" % "guava" % "19.0" % Test,
   "ch.qos.logback" % "logback-classic" % "1.5.6" % Test
 )

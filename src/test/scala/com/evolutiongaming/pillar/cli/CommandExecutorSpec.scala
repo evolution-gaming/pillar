@@ -49,7 +49,7 @@ class CommandExecutorSpec extends AnyFunSpec with BeforeAndAfter with MockitoSug
       }
     }
 
-    describe("a migrate action with date restriction") {
+    describe("a migrate action with date restriction") { // FAILED
       val date = Instant.now
       val command = Command(Migrate, session, keyspace, Some(date.toEpochMilli), registry, simpleStrategy, appliedMigrationsTableName)
 

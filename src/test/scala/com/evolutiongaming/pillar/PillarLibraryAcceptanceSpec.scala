@@ -206,7 +206,7 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
       session.execute(QueryBuilder.select().from(keyspaceName, "applied_migrations")).all().size() should equal(1)
     }
 
-    Scenario("skip previously applied migration") {
+    Scenario("skip previously applied migration") { // FAILED
       Given("an initialized keyspace")
       migrator.initialize(session, keyspaceName, simpleStrategy)
 
@@ -225,7 +225,7 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
     info("I want to migrate a Cassandra keyspace from a newer version of the schema to an older version")
     info("So that I can run an application using the schema")
 
-    Scenario("reversible previously applied migration") {
+    Scenario("reversible previously applied migration") { // FAILED
       Given("an initialized keyspace")
       migrator.initialize(session, keyspaceName, simpleStrategy)
 
@@ -251,7 +251,7 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
       session.execute(query).all().size() should equal(0)
     }
 
-    Scenario("irreversible previously applied migration") {
+    Scenario("irreversible previously applied migration") { // FAILED
       Given("an initialized keyspace")
       migrator.initialize(session, keyspaceName, simpleStrategy)
 
