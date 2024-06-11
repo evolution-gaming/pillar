@@ -6,7 +6,7 @@ lazy val root = project
   .settings(
     name := "pillar",
     scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq("2.13.1", "2.12.11"),
+    crossScalaVersions := Seq("2.13.14", "2.12.19"),
     licenses := Seq(("MIT", url("https://opensource.org/licenses/MIT"))),
     resolvers += Resolver.bintrayRepo("evolutiongaming", "maven"),
     libraryDependencies ++= dependencies,
