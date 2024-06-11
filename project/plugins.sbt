@@ -1,11 +1,13 @@
-externalResolvers += Resolver.bintrayIvyRepo("evolutiongaming", "sbt-plugins")
+externalResolvers := Seq(
+  Resolver.url("Evolution Gaming (ivy)", url("https://rms.evolutiongaming.com/pub-ivy/"))(
+    Resolver.ivyStylePatterns
+  )
+)
 
-addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.5.6")
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "2.0.12")
 
-addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.1")
+addSbtPlugin("org.scoverage" % "sbt-coveralls" % "1.3.11")
 
-addSbtPlugin("org.scoverage" % "sbt-coveralls" % "1.2.7")
-
-addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.13")
+addSbtPlugin("com.github.sbt" % "sbt-release" % "1.4.0")
 
 addSbtPlugin("com.evolution" % "sbt-scalac-opts-plugin" % "0.0.9")
