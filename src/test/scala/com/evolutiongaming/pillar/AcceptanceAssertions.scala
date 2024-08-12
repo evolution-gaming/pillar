@@ -6,8 +6,8 @@ import org.scalatest.Assertion
 import org.scalatest.matchers.should.Matchers
 
 trait AcceptanceAssertions extends Matchers {
-  val session: Session
-  val keyspaceName: String
+  def session: Session
+  def keyspaceName: String
 
   protected def assertEmptyAppliedMigrationsTable(appliedMigrationsTableName: String = "applied_migrations"): Assertion = {
     session.execute(QueryBuilder.select().from(keyspaceName, appliedMigrationsTableName)).all().size() should equal(0)

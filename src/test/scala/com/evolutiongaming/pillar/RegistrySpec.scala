@@ -3,10 +3,10 @@ package com.evolutiongaming.pillar
 import java.io.File
 import java.time.Instant
 
-import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfter
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatestplus.mockito.MockitoSugar
 
 class RegistrySpec extends AnyFunSpec with BeforeAndAfter with Matchers with MockitoSugar {
   describe(".fromDirectory") {

@@ -1,6 +1,7 @@
 package com.evolutiongaming.pillar
 
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 import java.util.Date
 
 import com.datastax.driver.core.exceptions.InvalidQueryException
@@ -21,7 +22,7 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
   val appliedMigrationsTableName = "applied_migrations"
 
   val migrations = Seq(
-    Migration("creates events table", Instant.now.minusSeconds(5),
+    Migration("creates events table", Instant.now.minusSeconds(5).truncatedTo(ChronoUnit.MILLIS),
       Seq("""
         |CREATE TABLE events (
         |  batch_id text,
@@ -31,7 +32,7 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
         |  PRIMARY KEY (batch_id, occurred_at, event_type)
         |)
       """.stripMargin)),
-    Migration("creates views table", Instant.now.minusSeconds(3),
+    Migration("creates views table", Instant.now.minusSeconds(3).truncatedTo(ChronoUnit.MILLIS),
       Seq("""
         |CREATE TABLE views (
         |  id uuid PRIMARY KEY,
@@ -43,12 +44,12 @@ class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
       Some( Seq("""
           |DROP TABLE views
         """.stripMargin))),
-    Migration("adds user_agent to views table", Instant.now.minusSeconds(1),
+    Migration("adds user_agent to views table", Instant.now.minusSeconds(1).truncatedTo(ChronoUnit.MILLIS),
       Seq("""
         |ALTER TABLE views
         |ADD user_agent text
           """.stripMargin), None), // Dropping a column is coming in Cassandra 2.0
-    Migration("adds index on views.user_agent", Instant.now,
+    Migration("adds index on views.user_agent", Instant.now.truncatedTo(ChronoUnit.MILLIS),
       Seq("""
         |CREATE INDEX views_user_agent ON views(user_agent)
       """.stripMargin),
