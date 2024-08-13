@@ -33,3 +33,5 @@ val dependencies = Seq(
   "com.google.guava" % "guava" % "18.0" % Test,
   "ch.qos.logback" % "logback-classic" % "1.2.3" % Test
 )
+
+addCommandAlias("check", "show version")
