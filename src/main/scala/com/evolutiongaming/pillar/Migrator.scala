@@ -2,7 +2,7 @@ package com.evolutiongaming.pillar
 
 import java.time.Instant
 
-import com.datastax.driver.core.ResultSet
+import com.datastax.oss.driver.api.core.cql.ResultSet
 
 object Migrator {
   def apply(registry: Registry, appliedMigrationsTableName: String): Migrator = {
