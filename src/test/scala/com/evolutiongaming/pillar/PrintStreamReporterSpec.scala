@@ -3,10 +3,10 @@ package com.evolutiongaming.pillar
 import java.io.{ByteArrayOutputStream, PrintStream}
 import java.time.Instant
 
-import org.mockito.MockitoSugar
 import org.scalatest._
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatestplus.mockito.MockitoSugar
 
 class PrintStreamReporterSpec extends AnyFunSpec with MockitoSugar with Matchers with OneInstancePerTest {
   val session = mock[Session]

@@ -4,7 +4,6 @@ import com.datastax.driver.core.{AuthProvider, ConsistencyLevel, PlainTextAuthPr
 import com.typesafe.config.{Config, ConfigFactory, ConfigValueType}
 
 import scala.jdk.CollectionConverters._
-import scala.language.implicitConversions
 
 /**
   * Configuration for connection to cassandra.

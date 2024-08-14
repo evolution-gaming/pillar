@@ -1,7 +1,8 @@
 package com.evolutiongaming.pillar
 
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.verify
 import org.scalatest.funspec.AnyFunSpec
+import org.scalatestplus.mockito.MockitoSugar
 
 class ReportingMigratorSpec extends AnyFunSpec with MockitoSugar {
   val reporter = mock[Reporter]

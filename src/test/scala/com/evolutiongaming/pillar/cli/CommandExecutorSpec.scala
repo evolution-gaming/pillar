@@ -1,11 +1,13 @@
 package com.evolutiongaming.pillar.cli
 
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 import com.evolutiongaming.pillar._
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{verify, when}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.funspec.AnyFunSpec
+import org.scalatestplus.mockito.MockitoSugar
 
 class CommandExecutorSpec extends AnyFunSpec with BeforeAndAfter with MockitoSugar {
   describe("#execute") {
@@ -50,7 +52,7 @@ class CommandExecutorSpec extends AnyFunSpec with BeforeAndAfter with MockitoSug
     }
 
     describe("a migrate action with date restriction") {
-      val date = Instant.now
+      val date = Instant.now.truncatedTo(ChronoUnit.MILLIS)
       val command = Command(Migrate, session, keyspace, Some(date.toEpochMilli), registry, simpleStrategy, appliedMigrationsTableName)
 
       executor.execute(command, reporter)
