@@ -46,11 +46,9 @@ jobs:
       - uses: coursier/cache-action@v6
 
       - name: setup Java and SBT
-        uses: actions/setup-java@v4
+        uses: olafurpg/setup-scala@v11
         with:
-          java-version: '11'
-          distribution: 'oracle'
-          cache: 'sbt'
+          java-version: openjdk@1.11
 
       - name: setup credentials
         run: |
