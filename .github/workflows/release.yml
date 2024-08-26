@@ -12,10 +12,12 @@
 ## TODO migrate/upgrade/fix the project so it builds on JDK 17(+)
 ## TODO uncomment above reference
 ## TODO remove everything below
-name: test and publish new release
+name: Publish new Release
 
 on:
-  workflow_call:
+  release:
+    types: [published]
+    branches: [master]
 
 concurrency:
   group: '${{ github.workflow }}-${{ github.ref }}'
