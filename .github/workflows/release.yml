@@ -1,11 +1,86 @@
-name: Publish new Release
+#name: Publish new Release
+#
+#on:
+#  release:
+#    types: [published]
+#    branches: [master]
+#
+#jobs:
+#  release:
+#    uses: evolution-gaming/scala-github-actions/.github/workflows/release.yml@v1
+#    secrets: inherit
+## TODO migrate/upgrade/fix the project so it builds on JDK 17(+)
+## TODO uncomment above reference
+## TODO remove everything below
+name: test and publish new release
 
 on:
-  release:
-    types: [published]
-    branches: [master]
+  workflow_call:
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+
+env:
+  SBT_CREDENTIALS: '.credentials'
 
 jobs:
-  release:
-    uses: evolution-gaming/scala-github-actions/.github/workflows/release.yml@v1
-    secrets: inherit
+  publish-release:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: check if tag matches with version in `version.sbt`
+        run: |
+          tag=${{ github.event.release.tag_name }} # get tag name, like: `v1.2.3`
+          version=${tag:1} # drop `v` prefix, like `1.2.3`
+          contains=$(grep "ThisBuild / version := \"$version\"" version.sbt)
+          if [[ ! $contains ]]
+          then
+            echo 'FAIL - version in "tag" (${tag}) is different than one in "version.sbt" file'
+            exit 1
+          fi
+
+      - uses: coursier/cache-action@v6
+
+      - name: setup Java and SBT
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'oracle'
+          cache: 'sbt'
+
+      - name: setup credentials
+        run: |
+          echo "realm=Artifactory Realm" >> ${{ env.SBT_CREDENTIALS }}
+          echo "host=evolution.jfrog.io" >> ${{ env.SBT_CREDENTIALS }}
+          echo "user=github-publish" >> ${{ env.SBT_CREDENTIALS }}
+          echo "password=${{secrets.JFROG_ACCESS_TOKEN}}" >> ${{ env.SBT_CREDENTIALS }}
+
+      - name: check, test and package
+        run: sbt "clean; +check; +all test package"
+
+      - name: publish on JFrog Artifactory
+        run: sbt "+publish"
+
+      #      - name: prepare next version
+      #        run: |
+      #          tag=${{ github.event.release.tag_name }} # get tag name, like: `v1.2.3`
+      #          version=${tag:1} # drop `v` prefix, like `1.2.3`
+      #          current=$( echo $version |grep -Eo '[0-9]+$' ) # last number in version, like `3`
+      #          next=$((current+1)) # increase last number, like `4`
+      #          prefix=$(echo ${version:0:-${#current}}) # extract prefix, like `1.2.`
+      #          echo -e "ThisBuild / version := \"$prefix$next\"\n" > version.sbt
+      #          git commit -m "prepare next version"
+      #          git status
+      #          git push
+
+      - name: cleanup credentials
+        if: always()
+        run: rm -rf ${{ env.SBT_CREDENTIALS }}
+
+      - name: delete tag
+        if: failure()
+        run: git push --delete origin ${{ github.ref_name }}
