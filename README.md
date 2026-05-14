@@ -54,7 +54,7 @@ pillar_2.13 or pillar_3. The current version of pillar is 5.0.0
 #### Gradle
 
 ```text
-  compile 'com.evolutiongaming:pillar_2.12:5.0.0'
+  compile 'com.evolutiongaming:pillar_2.13:5.0.0'
 ```
 
 ## Usage
