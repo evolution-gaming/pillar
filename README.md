@@ -43,7 +43,7 @@ This method requires [Simple Build Tool (sbt)][sbt].
 ### Packages
 
 Pillar is available at Maven Central under the GroupId `com.evolutiongaming` and ArtifactId
-pillar_2.12 or pillar_2.13. The current version of pillar is 5.0.0
+pillar_2.13 or pillar_3. The current version of pillar is 5.0.0
 
 #### sbt
 
@@ -325,6 +325,7 @@ Reference the acceptance spec suite for details.
 #### 5.1.1
 
 * Switch release publishing to Maven Central
+* Remove cross-compilation to Scala 2.12 - cross-compile only to Scala 2.13 and 3 LTS (3.3.x)
 
 #### 5.0.1
 
