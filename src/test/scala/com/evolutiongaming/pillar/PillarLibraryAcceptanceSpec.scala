@@ -4,12 +4,13 @@ import com.datastax.driver.core.exceptions.InvalidQueryException
 import com.datastax.driver.core.querybuilder.QueryBuilder
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.{BeforeAndAfter, GivenWhenThen}
+import org.scalatest.{BeforeAndAfter, GivenWhenThen, Ignore}
 
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.Date
 
+@Ignore // TODO: WIP migrate to testcontainers
 class PillarLibraryAcceptanceSpec extends AnyFeatureSpec
 with CassandraSpec
 with GivenWhenThen

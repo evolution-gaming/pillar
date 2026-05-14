@@ -1,43 +1,24 @@
-name: CI
+name: ci
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
 
 jobs:
-  test:
-
+  build:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        scala:
-          - 2.13.14
-          - 2.12.19
-          - 3.3.3
-
     steps:
-      - uses: actions/checkout@v2
-
+      - uses: actions/checkout@v5
+        with:
+          # fetch tags - tags are needed for versionPolicyCheck binary and source compat checks
+          fetch-tags: true
       - uses: coursier/cache-action@v6
-
-      - name: scala
-        uses: olafurpg/setup-scala@v11
+      - uses: actions/setup-java@v5
         with:
-          java-version: openjdk@1.11
-
-      - name: build ${{ matrix.scala }}
-        run: sbt ++${{ matrix.scala }} clean coverage test
-
-      - name: test coverage
-        if: success()
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COVERALLS_FLAG_NAME: Scala ${{ matrix.scala }}
-        run: sbt ++${{ matrix.scala }} coverageReport coverageAggregate coveralls
-
-      - name: slack
-        uses: homoluctus/slatify@master
-        if: failure() && github.ref == 'refs/heads/master'
-        with:
-          type: ${{ job.status }}
-          job_name: Build
-          url: ${{ secrets.SLACK_WEBHOOK }}
+          java-version: 17
+          distribution: temurin
+          cache: sbt
+      - uses: sbt/setup-sbt@v1
+      - name: sbt build
+        run: sbt clean build

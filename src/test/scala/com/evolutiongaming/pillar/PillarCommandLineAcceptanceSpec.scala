@@ -6,8 +6,9 @@ import com.evolutiongaming.pillar.cli.App
 import com.typesafe.config.ConfigFactory
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.{BeforeAndAfter, GivenWhenThen}
+import org.scalatest.{BeforeAndAfter, GivenWhenThen, Ignore}
 
+@Ignore // TODO: WIP migrate to testcontainers
 class PillarCommandLineAcceptanceSpec extends AnyFeatureSpec
 with CassandraSpec
 with GivenWhenThen

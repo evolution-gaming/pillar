@@ -37,7 +37,9 @@ This method requires [Simple Build Tool (sbt)][sbt].
 
 ### Packages
 
-Pillar is available at Maven Central under the GroupId `com.evolutiongaming` and ArtifactId pillar_2.12 or pillar_2.13. The current version of pillar is 5.0.0
+TODO: WIP rewrite links to Maven Central, remove mentions of the current version
+
+Pillar is available at Maven Central under the GroupId `com.evolutiongaming` and ArtifactId pillar_2.13 or pillar_3. The current version of pillar is 5.0.0
 
 #### sbt
 
@@ -48,7 +50,7 @@ Pillar is available at Maven Central under the GroupId `com.evolutiongaming` and
 #### Gradle
 
 ```text
-  compile 'com.evolutiongaming:pillar_2.12:5.0.0'
+  compile 'com.evolutiongaming:pillar_2.13:5.0.0'
 ```
 
 ## Usage
@@ -303,6 +305,12 @@ You can also integrate Pillar directly into your application as a library.
 Reference the acceptance spec suite for details.
 
 ### Release Notes
+
+#### 5.2.0 - WIP
+* Add scalafmt auto-formatter
+* Drop cross-compilation for Scala 2.12 - cross-compile only for 2.13 and 3 LTS (3.3.x)
+* Minimal JDK version required is increased to 17
+* Restore release publishing to Maven Central
 
 #### 5.0.1
 * Consistency level can now be explicitly configured (the default is still `QUORUM`)

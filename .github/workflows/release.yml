@@ -1,86 +1,50 @@
-#name: Publish new Release
-#
-#on:
-#  release:
-#    types: [published]
-#    branches: [master]
-#
-#jobs:
-#  release:
-#    uses: evolution-gaming/scala-github-actions/.github/workflows/release.yml@v1
-#    secrets: inherit
-## TODO migrate/upgrade/fix the project so it builds on JDK 17(+)
-## TODO uncomment above reference
-## TODO remove everything below
-name: Publish new Release
+name: release
 
 on:
-  release:
-    types: [published]
-    branches: [master]
+  push:
+    tags: [ "v*" ]
 
+# run only one release action at a time for the repo, wait for the previous to finish before running another one
 concurrency:
-  group: '${{ github.workflow }}-${{ github.ref }}'
-  cancel-in-progress: true
-
-env:
-  SBT_CREDENTIALS: '.credentials'
+  group: ${{ github.repository }}-${{ github.workflow }}
 
 jobs:
-  publish-release:
-
+  publish:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
-
-      - name: check if tag matches with version in `version.sbt`
-        run: |
-          tag=${{ github.event.release.tag_name }} # get tag name, like: `v1.2.3`
-          version=${tag:1} # drop `v` prefix, like `1.2.3`
-          contains=$(grep "ThisBuild / version := \"$version\"" version.sbt)
-          if [[ ! $contains ]]
-          then
-            echo 'FAIL - version in "tag" (${tag}) is different than one in "version.sbt" file'
-            exit 1
-          fi
-
-      - uses: coursier/cache-action@v6
-
-      - name: setup Java and SBT
-        uses: olafurpg/setup-scala@v11
+      - uses: actions/checkout@v5
         with:
-          java-version: openjdk@1.11
+          # Fetch all history for all branches and tags - just in case it's all necessary for ci-release.
+          # Tags are needed for versionPolicyCheck binary and source compat checks.
+          fetch-depth: 0
+      - uses: coursier/cache-action@v6
+      - uses: actions/setup-java@v5
+        with:
+          java-version: 17
+          distribution: temurin
+          cache: sbt
+      - uses: sbt/setup-sbt@v1
+      # sbt ci-release doesn't verify the build, need to do it explicitly
+      - name: sbt build
+        run: sbt clean build
+      - run: sbt ci-release
+        env:
+          PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
+          PGP_SECRET: ${{ secrets.PGP_SECRET }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
 
-      - name: setup credentials
-        run: |
-          echo "realm=Artifactory Realm" >> ${{ env.SBT_CREDENTIALS }}
-          echo "host=evolution.jfrog.io" >> ${{ env.SBT_CREDENTIALS }}
-          echo "user=github-publish" >> ${{ env.SBT_CREDENTIALS }}
-          echo "password=${{secrets.JFROG_ACCESS_TOKEN}}" >> ${{ env.SBT_CREDENTIALS }}
-
-      - name: check, test and package
-        run: sbt "clean; +check; +all test package"
-
-      - name: publish on JFrog Artifactory
-        run: sbt "+publish"
-
-      #      - name: prepare next version
-      #        run: |
-      #          tag=${{ github.event.release.tag_name }} # get tag name, like: `v1.2.3`
-      #          version=${tag:1} # drop `v` prefix, like `1.2.3`
-      #          current=$( echo $version |grep -Eo '[0-9]+$' ) # last number in version, like `3`
-      #          next=$((current+1)) # increase last number, like `4`
-      #          prefix=$(echo ${version:0:-${#current}}) # extract prefix, like `1.2.`
-      #          echo -e "ThisBuild / version := \"$prefix$next\"\n" > version.sbt
-      #          git commit -m "prepare next version"
-      #          git status
-      #          git push
-
-      - name: cleanup credentials
-        if: always()
-        run: rm -rf ${{ env.SBT_CREDENTIALS }}
-
-      - name: delete tag
+      - name: delete release tag if failed
         if: failure()
         run: git push --delete origin ${{ github.ref_name }}
+
+      - name: publish release notes
+        if: success()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+        run: |
+          gh release create "$tag" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="v${tag#v}" \
+              --generate-notes
