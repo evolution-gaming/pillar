@@ -6,7 +6,7 @@ lazy val root = project
   .settings(
     name := "pillar",
     scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq("2.13.14", "2.12.19", "3.3.3"),
+    crossScalaVersions := Seq("2.13.14", "3.3.3"),
     licenses := Seq(("MIT", url("https://opensource.org/licenses/MIT"))),
     publishTo := Some(Resolver.evolutionReleases),
     libraryDependencies ++= dependencies,
@@ -25,7 +25,6 @@ Compile / scalacOptions ++= Seq("-language:implicitConversions")
 
 val dependencies = Seq(
   "com.typesafe" % "config" % "1.4.3",
-  "org.scala-lang.modules" %% "scala-collection-compat" % "2.12.0",
   "com.datastax.cassandra" % "cassandra-driver-core" % "3.8.0",
   "org.cassandraunit" % "cassandra-unit" % "3.11.2.0" % Test,
   "org.scalatest" %% "scalatest" % "3.2.19" % Test,
