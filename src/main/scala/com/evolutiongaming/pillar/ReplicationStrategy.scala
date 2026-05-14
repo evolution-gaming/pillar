@@ -1,9 +1,10 @@
 package com.evolutiongaming.pillar
 
 /**
-  * Defines all possible ReplicationStrategy configurations.
-  * A NetworkTopologyStrategy will require the appropriate snitch.
-  */
+ * Defines all possible ReplicationStrategy configurations.
+ *
+ * A NetworkTopologyStrategy will require the appropriate snitch.
+ */
 sealed trait ReplicationStrategy {
   def cql: String
   override def toString: String = cql
@@ -20,13 +21,13 @@ final case class NetworkTopologyStrategy(dataCenters: Seq[CassandraDataCenter]) 
 
   override def cql: String = {
     val replicationFacString = dataCenters.map { dc =>
-      s"'${dc.name}' : ${dc.replicationFactor} "
+      s"'${ dc.name }' : ${ dc.replicationFactor } "
     }.mkString(", ")
 
     s"{'class' : 'NetworkTopologyStrategy', $replicationFacString }"
   }
 }
 
-final case class CassandraDataCenter(name: String, replicationFactor: Int){
+final case class CassandraDataCenter(name: String, replicationFactor: Int) {
   require(replicationFactor > 0 && name.nonEmpty)
 }

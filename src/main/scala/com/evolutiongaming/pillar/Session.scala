@@ -1,6 +1,13 @@
 package com.evolutiongaming.pillar
 
-import com.datastax.driver.core.{Cluster, ConsistencyLevel, ResultSet, SimpleStatement, Statement, Session => CassandraSession}
+import com.datastax.driver.core.{
+  Cluster,
+  ConsistencyLevel,
+  ResultSet,
+  Session => CassandraSession,
+  SimpleStatement,
+  Statement,
+}
 
 class Session(cassandraSession: CassandraSession, consistencyLevel: ConsistencyLevel) {
 

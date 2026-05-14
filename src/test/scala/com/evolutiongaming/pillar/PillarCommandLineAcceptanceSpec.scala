@@ -9,17 +9,17 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.{BeforeAndAfter, GivenWhenThen}
 
 class PillarCommandLineAcceptanceSpec extends AnyFeatureSpec
-  with CassandraSpec
-  with GivenWhenThen
-  with BeforeAndAfter
-  with Matchers
-  with AcceptanceAssertions {
+with CassandraSpec
+with GivenWhenThen
+with BeforeAndAfter
+with Matchers
+with AcceptanceAssertions {
 
   val keyspaceName = "pillar_acceptance_test"
   val environment = "acceptance_test"
   val dataStoreName = "faker"
 
-  //create a configuration pointing to the embedded cassandra, falling back to the default configuration
+  // create a configuration pointing to the embedded cassandra, falling back to the default configuration
   lazy val config = ConfigFactory.parseString(
     s"""
        |pillar.$dataStoreName {
@@ -27,7 +27,8 @@ class PillarCommandLineAcceptanceSpec extends AnyFeatureSpec
        |        cassandra-port: $port
        |    }
        |}
-     """.stripMargin).withFallback(ConfigFactory.load())
+     """.stripMargin,
+  ).withFallback(ConfigFactory.load())
 
   before {
     try {
@@ -66,7 +67,9 @@ class PillarCommandLineAcceptanceSpec extends AnyFeatureSpec
       Given("a migration that creates a views table")
 
       When("the migrator migrates the schema")
-      App(configuration = config).run(Array("-e", environment, "-d", "src/test/resources/pillar/migrations", "migrate", dataStoreName))
+      App(configuration =
+        config,
+      ).run(Array("-e", environment, "-d", "src/test/resources/pillar/migrations", "migrate", dataStoreName))
 
       Then("the keyspace contains the events table")
       session.execute(QueryBuilder.select().from(keyspaceName, "events")).all().size() should equal(0)
@@ -75,7 +78,9 @@ class PillarCommandLineAcceptanceSpec extends AnyFeatureSpec
       session.execute(QueryBuilder.select().from(keyspaceName, "views")).all().size() should equal(0)
 
       And("the applied_migrations table records the migrations")
-      session.execute(QueryBuilder.select().from(keyspaceName, "applied_migrations")).all().size() should equal(4)
+      session.execute(
+        QueryBuilder.select().from(keyspaceName, "applied_migrations"),
+      ).all().size() should equal(4)
     }
   }
 }

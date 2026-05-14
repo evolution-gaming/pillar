@@ -2,7 +2,6 @@ package com.evolutiongaming.pillar
 
 import java.io.InputStream
 import java.time.Instant
-
 import scala.collection.mutable
 import scala.io.Source
 
@@ -17,7 +16,7 @@ class PartialMigration {
   var authoredAt: String = ""
 
   var upStages: mutable.Buffer[String] = mutable.Buffer.empty[String]
-  var downStages : Option[mutable.Buffer[String]] = None
+  var downStages: Option[mutable.Buffer[String]] = None
 
   var currentUp: mutable.Buffer[String] = mutable.Buffer.empty[String]
   var currentDown: Option[mutable.Buffer[String]] = None
@@ -34,12 +33,12 @@ class PartialMigration {
       case Some(currentDownLines) =>
         downStages match {
           case None => downStages = Some(mutable.Buffer.empty[String])
-          case Some(_) => //do nothing
+          case Some(_) => // do nothing
         }
 
         downStages = Some(downStages.get += currentDownLines.mkString("\n"))
 
-      case None => //do nothing
+      case None => // do nothing
     }
 
     currentDown = None
@@ -54,7 +53,8 @@ class PartialMigration {
 
     if (description.isEmpty) errors("description") = "must be present"
     if (authoredAt.isEmpty) errors("authoredAt") = "must be present"
-    if (!authoredAt.isEmpty && authoredAtAsLong < 1) errors("authoredAt") = "must be a number greater than zero"
+    if (!authoredAt.isEmpty && authoredAtAsLong < 1)
+      errors("authoredAt") = "must be a number greater than zero"
     if (upStages.isEmpty) errors("up") = "must be present"
 
     if (errors.nonEmpty) Some(errors.toMap) else None
@@ -64,7 +64,7 @@ class PartialMigration {
     try {
       authoredAt.toLong
     } catch {
-      case _:NumberFormatException => -1
+      case _: NumberFormatException => -1
     }
   }
 
@@ -90,30 +90,31 @@ class Parser {
     val inProgress = new PartialMigration
     var state: ParserState = ParsingAttributes
     Source.fromInputStream(resource).getLines().foreach {
-      case MatchAttribute("authoredAt", authoredAt)   =>
+      case MatchAttribute("authoredAt", authoredAt) =>
         inProgress.authoredAt = authoredAt.trim
       case MatchAttribute("description", description) =>
         inProgress.description = description.trim
-      case MatchAttribute("up", _)                    =>
+      case MatchAttribute("up", _) =>
         state = ParsingUp
-      case MatchAttribute("down", _)                  =>
+      case MatchAttribute("down", _) =>
         inProgress.rotateUp()
         inProgress.currentDown = Some(mutable.Buffer.empty[String])
         state = ParsingDown
-      case MatchAttribute("stage", number@_)          =>
+      case MatchAttribute("stage", number @ _) =>
         state match {
-          case ParsingUp        => state = ParsingUpStage
-          case ParsingUpStage   => inProgress.rotateUp()
-          case ParsingDown      => state = ParsingDownStage
-          case ParsingDownStage => inProgress.rotateDown(); inProgress.currentDown = Some(mutable.Buffer.empty[String])
+          case ParsingUp => state = ParsingUpStage
+          case ParsingUpStage => inProgress.rotateUp()
+          case ParsingDown => state = ParsingDownStage
+          case ParsingDownStage =>
+            inProgress.rotateDown(); inProgress.currentDown = Some(mutable.Buffer.empty[String])
         }
-      case cql                                        =>
+      case cql =>
         if (!cql.isEmpty) {
 
           state match {
-            case ParsingUp | ParsingUpStage     => inProgress.currentUp += cql
+            case ParsingUp | ParsingUpStage => inProgress.currentUp += cql
             case ParsingDown | ParsingDownStage => inProgress.currentDown.get += cql
-            case other@_                        => // ignored
+            case other @ _ => // ignored
           }
         }
     }
@@ -124,11 +125,25 @@ class Parser {
         inProgress.downStages match {
           case Some(downLines) =>
             if (downLines.forall(_.isEmpty)) {
-              Migration(inProgress.description, Instant.ofEpochMilli(inProgress.authoredAtAsLong), inProgress.upStages.toSeq, None)
+              Migration(
+                inProgress.description,
+                Instant.ofEpochMilli(inProgress.authoredAtAsLong),
+                inProgress.upStages.toSeq,
+                None,
+              )
             } else {
-              Migration(inProgress.description, Instant.ofEpochMilli(inProgress.authoredAtAsLong), inProgress.upStages.toSeq, Some(downLines.toSeq))
+              Migration(
+                inProgress.description,
+                Instant.ofEpochMilli(inProgress.authoredAtAsLong),
+                inProgress.upStages.toSeq,
+                Some(downLines.toSeq),
+              )
             }
-          case None => Migration(inProgress.description, Instant.ofEpochMilli(inProgress.authoredAtAsLong), inProgress.upStages.toSeq)
+          case None => Migration(
+              inProgress.description,
+              Instant.ofEpochMilli(inProgress.authoredAtAsLong),
+              inProgress.upStages.toSeq,
+            )
         }
     }
   }

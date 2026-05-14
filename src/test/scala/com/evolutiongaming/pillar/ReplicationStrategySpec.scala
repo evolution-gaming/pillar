@@ -12,7 +12,7 @@ class ReplicationStrategySpec extends AnyFlatSpec with Matchers {
   behavior of "A configuration with definition whatsoever"
   it should "return a SimpleStrategy object with a replication factor of 3" in {
     val goodCase = ReplicationStrategyBuilder.getReplicationStrategy(configuration, datastore, "unknownenv")
-    goodCase shouldBe a [SimpleStrategy]
+    goodCase shouldBe a[SimpleStrategy]
     goodCase match {
       case s: SimpleStrategy => s.replicationFactor should equal(3)
       case _ =>
@@ -22,7 +22,7 @@ class ReplicationStrategySpec extends AnyFlatSpec with Matchers {
   behavior of "A valid SimpleStrategy configuration"
   it should "return a SimpleStrategy object" in {
     val goodCase = ReplicationStrategyBuilder.getReplicationStrategy(configuration, datastore, "simpleGood")
-    goodCase shouldBe a [SimpleStrategy]
+    goodCase shouldBe a[SimpleStrategy]
     goodCase match {
       case s: SimpleStrategy => s.replicationFactor should equal(1)
       case _ =>
@@ -60,7 +60,7 @@ class ReplicationStrategySpec extends AnyFlatSpec with Matchers {
   behavior of "A valid network topology strategy configuration"
   it should "return a NetworkTopology object with the configured values" in {
     val goodCase = ReplicationStrategyBuilder.getReplicationStrategy(configuration, datastore, "netGood")
-    goodCase shouldBe a [NetworkTopologyStrategy]
+    goodCase shouldBe a[NetworkTopologyStrategy]
     goodCase match {
       case n: NetworkTopologyStrategy =>
         n.dataCenters.length should equal(2)
@@ -71,7 +71,7 @@ class ReplicationStrategySpec extends AnyFlatSpec with Matchers {
       case _ =>
     }
   }
-  
+
   behavior of "A network topology strategy configuration with an empty replication factor array"
   it should "return an BadValue exception" in {
     intercept[BadValue] {

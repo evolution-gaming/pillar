@@ -1,13 +1,13 @@
 package com.evolutiongaming.pillar.cli
 
-import java.time.Instant
-import java.time.temporal.ChronoUnit
-
 import com.evolutiongaming.pillar._
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatestplus.mockito.MockitoSugar
+
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 class CommandExecutorSpec extends AnyFunSpec with BeforeAndAfter with MockitoSugar {
   describe("#execute") {
@@ -24,7 +24,15 @@ class CommandExecutorSpec extends AnyFunSpec with BeforeAndAfter with MockitoSug
     val executor = new CommandExecutor()(migratorConstructor)
 
     describe("an initialize action") {
-      val commandSimple = Command(Initialize, session, keyspace, None, registry, simpleStrategy, appliedMigrationsTableName)
+      val commandSimple = Command(
+        Initialize,
+        session,
+        keyspace,
+        None,
+        registry,
+        simpleStrategy,
+        appliedMigrationsTableName,
+      )
 
       executor.execute(commandSimple, reporter)
 
@@ -32,7 +40,15 @@ class CommandExecutorSpec extends AnyFunSpec with BeforeAndAfter with MockitoSug
         verify(migrator).initialize(session, keyspace, simpleStrategy)
       }
 
-      val commandNetwork = Command(Initialize, session, keyspace, None, registry, networkTopologyStrategy, appliedMigrationsTableName)
+      val commandNetwork = Command(
+        Initialize,
+        session,
+        keyspace,
+        None,
+        registry,
+        networkTopologyStrategy,
+        appliedMigrationsTableName,
+      )
 
       executor.execute(commandNetwork, reporter)
 
@@ -42,7 +58,15 @@ class CommandExecutorSpec extends AnyFunSpec with BeforeAndAfter with MockitoSug
     }
 
     describe("a migrate action without date restriction") {
-      val command = Command(Migrate, session, keyspace, None, registry, simpleStrategy, appliedMigrationsTableName)
+      val command = Command(
+        Migrate,
+        session,
+        keyspace,
+        None,
+        registry,
+        simpleStrategy,
+        appliedMigrationsTableName,
+      )
 
       executor.execute(command, reporter)
 
@@ -53,7 +77,15 @@ class CommandExecutorSpec extends AnyFunSpec with BeforeAndAfter with MockitoSug
 
     describe("a migrate action with date restriction") {
       val date = Instant.now.truncatedTo(ChronoUnit.MILLIS)
-      val command = Command(Migrate, session, keyspace, Some(date.toEpochMilli), registry, simpleStrategy, appliedMigrationsTableName)
+      val command = Command(
+        Migrate,
+        session,
+        keyspace,
+        Some(date.toEpochMilli),
+        registry,
+        simpleStrategy,
+        appliedMigrationsTableName,
+      )
 
       executor.execute(command, reporter)
 

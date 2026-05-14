@@ -1,11 +1,16 @@
 package com.evolutiongaming.pillar
 
-import java.time.Instant
-
 import com.datastax.driver.core.ResultSet
 
-class ReportingMigrator(reporter: Reporter, wrapped: Migrator, appliedMigrationsTableName: String) extends Migrator {
-  override def initialize(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy): ResultSet = {
+import java.time.Instant
+
+class ReportingMigrator(reporter: Reporter, wrapped: Migrator, appliedMigrationsTableName: String)
+extends Migrator {
+  override def initialize(
+    session: Session,
+    keyspace: String,
+    replicationStrategy: ReplicationStrategy,
+  ): ResultSet = {
     createKeyspace(session, keyspace, replicationStrategy)
     createMigrationsTable(session, keyspace)
   }
@@ -20,7 +25,11 @@ class ReportingMigrator(reporter: Reporter, wrapped: Migrator, appliedMigrations
     wrapped.destroy(session, keyspace)
   }
 
-  override def createKeyspace(session: Session, keyspace: String, replicationStrategy: ReplicationStrategy): ResultSet = {
+  override def createKeyspace(
+    session: Session,
+    keyspace: String,
+    replicationStrategy: ReplicationStrategy,
+  ): ResultSet = {
     reporter.creatingKeyspace(session, keyspace, replicationStrategy)
     wrapped.createKeyspace(session, keyspace, replicationStrategy)
   }

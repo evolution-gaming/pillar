@@ -1,15 +1,17 @@
 package com.evolutiongaming.pillar.cli
 
-import java.io.File
-
 import com.datastax.driver.core.{Cluster, QueryOptions}
 import com.evolutiongaming.pillar.config.ConnectionConfiguration
 import com.evolutiongaming.pillar.{PrintStreamReporter, ReplicationStrategyBuilder, Reporter, _}
 import com.typesafe.config.{Config, ConfigFactory}
 
+import java.io.File
+
 object App {
-  def apply(reporter: Reporter = new PrintStreamReporter(System.out),
-            configuration: Config = ConfigFactory.load()): App = {
+  def apply(
+    reporter: Reporter = new PrintStreamReporter(System.out),
+    configuration: Config = ConfigFactory.load(),
+  ): App = {
     new App(reporter, configuration)
   }
 
@@ -30,7 +32,10 @@ class App(reporter: Reporter, configuration: Config) {
 
   def run(arguments: Array[String]): Unit = {
     val commandLineConfiguration = CommandLineConfiguration.buildFromArguments(arguments)
-    val registry = Registry.fromDirectory(new File(commandLineConfiguration.migrationsDirectory, commandLineConfiguration.dataStore), reporter)
+    val registry = Registry.fromDirectory(
+      new File(commandLineConfiguration.migrationsDirectory, commandLineConfiguration.dataStore),
+      reporter,
+    )
     val dataStoreName = commandLineConfiguration.dataStore
     val environment = commandLineConfiguration.environment
 
@@ -66,12 +71,12 @@ class App(reporter: Reporter, configuration: Config) {
     }
   }
 
-  private def createCluster(connectionConfiguration:ConnectionConfiguration): Cluster = {
+  private def createCluster(connectionConfiguration: ConnectionConfiguration): Cluster = {
     val queryOptions = new QueryOptions()
     queryOptions.setConsistencyLevel(connectionConfiguration.consistencyLevel)
 
     val clusterBuilder = Cluster.builder()
-      .addContactPoints(connectionConfiguration.seedAddress:_*)
+      .addContactPoints(connectionConfiguration.seedAddress: _*)
       .withPort(connectionConfiguration.port)
       .withQueryOptions(queryOptions)
     connectionConfiguration.auth.foreach(clusterBuilder.withAuthProvider)

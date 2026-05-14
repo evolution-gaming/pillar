@@ -6,8 +6,8 @@ import com.typesafe.config.{Config, ConfigFactory, ConfigValueType}
 import scala.jdk.CollectionConverters._
 
 /**
-  * Configuration for connection to cassandra.
-  */
+ * Configuration for connection to cassandra.
+ */
 class ConnectionConfiguration(dataStoreName: String, environment: String, appConfig: Config) {
 
   val connectionConfig: Config = appConfig
@@ -24,7 +24,9 @@ class ConnectionConfiguration(dataStoreName: String, environment: String, appCon
   import ConfigHelper.toOptionalConfig
 
   val auth = Auth(connectionConfig.getOptionalConfig("auth"))
-  val appliedMigrationsTableName = connectionConfig.getOptionalString("applied-migrations-table-name").getOrElse("applied_migrations")
+  val appliedMigrationsTableName = connectionConfig
+    .getOptionalString("applied-migrations-table-name")
+    .getOrElse("applied_migrations")
 
   val sslConfig: Option[SslConfig] = SslConfig(connectionConfig.getOptionalConfig("ssl-options"))
 
@@ -58,7 +60,7 @@ object ConfigHelper {
   }
 
   // Maintain backward compatibility with specification of a single String value instead of an array
-  def readAsStringArray(config: Config, path: String) : List[String] = {
+  def readAsStringArray(config: Config, path: String): List[String] = {
     val value = config.getValue(path)
     if (value.valueType() == ConfigValueType.LIST) {
       value.unwrapped().asInstanceOf[java.util.List[Object]].asScala.toList.map(a => a.asInstanceOf[String])
@@ -68,17 +70,23 @@ object ConfigHelper {
   }
 }
 
-abstract sealed class Auth
+sealed abstract class Auth
 
 case class PlaintextAuth(username: String, password: String) extends Auth
 
 object Auth {
   def apply(config: Option[Config]): Option[AuthProvider] = {
-    config.map(config => new PlainTextAuthProvider(config.getString("username"), config.getString("password")))
+    config.map(config =>
+      new PlainTextAuthProvider(config.getString("username"), config.getString("password")),
+    )
   }
 }
 
-case class TrustStoreConfig(trustStorePath: String, trustStorePassword: String, trustStoreType: String = "JKS") {
+case class TrustStoreConfig(
+  trustStorePath: String,
+  trustStorePassword: String,
+  trustStoreType: String = "JKS",
+) {
   def setAsSystemProperties() = {
     System.setProperty("javax.net.ssl.trustStore", trustStorePath)
     System.setProperty("javax.net.ssl.trustStorePassword", trustStorePassword)
@@ -95,7 +103,10 @@ case class KeyStoreConfig(keyStorePath: String, keyStorePassword: String, keySto
   }
 }
 
-case class SslConfig(val keyStoreConfig: Option[KeyStoreConfig], val trustStoreConfig: Option[TrustStoreConfig]) {
+case class SslConfig(
+  val keyStoreConfig: Option[KeyStoreConfig],
+  val trustStoreConfig: Option[TrustStoreConfig],
+) {
   def setAsSystemProperties(): Unit = {
     keyStoreConfig.foreach(_.setAsSystemProperties())
     trustStoreConfig.foreach(_.setAsSystemProperties())
@@ -108,15 +119,23 @@ object SslConfig {
 
   def apply(config: Option[Config]): Option[SslConfig] = {
     config.map(config => {
-      val keyStoreConfig: Option[KeyStoreConfig] = for (
-        path <- config.getOptionalString("key-store-path");
-        password <- config.getOptionalString("key-store-password"))
-        yield KeyStoreConfig(path, password, config.getOptionalString("key-store-type").getOrElse("JKS"))
+      val keyStoreConfig: Option[KeyStoreConfig] = for {
+        path <- config.getOptionalString("key-store-path")
+        password <- config.getOptionalString("key-store-password")
+      } yield KeyStoreConfig(
+        path,
+        password,
+        config.getOptionalString("key-store-type").getOrElse("JKS"),
+      )
 
-      val trustStoreConfig: Option[TrustStoreConfig] = for (
-        path <- config.getOptionalString("trust-store-path");
-        password <- config.getOptionalString("trust-store-password"))
-        yield TrustStoreConfig(path, password, config.getOptionalString("trust-store-type").getOrElse("JKS"))
+      val trustStoreConfig: Option[TrustStoreConfig] = for {
+        path <- config.getOptionalString("trust-store-path")
+        password <- config.getOptionalString("trust-store-password")
+      } yield TrustStoreConfig(
+        path,
+        password,
+        config.getOptionalString("trust-store-type").getOrElse("JKS"),
+      )
 
       new SslConfig(keyStoreConfig, trustStoreConfig)
 

@@ -6,8 +6,8 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
 /**
-  * Tests for Connection Configuration.
-  */
+ * Tests for Connection Configuration.
+ */
 class ConnectionConfigurationTest extends AnyFunSpec with BeforeAndAfter with Matchers {
   val TRUST_STORE = "javax.net.ssl.trustStore"
   val TRUST_STORE_PASSWORD = "javax.net.ssl.trustStorePassword"
@@ -17,17 +17,24 @@ class ConnectionConfigurationTest extends AnyFunSpec with BeforeAndAfter with Ma
   val KEY_STORE_TYPE = "javax.net.ssl.keyStoreType"
   before {
     val propertiesToReset = List(
-      TRUST_STORE, TRUST_STORE_PASSWORD, TRUST_STORE_TYPE,
-      KEY_STORE, KEY_STORE_PASSWORD, KEY_STORE_TYPE)
+      TRUST_STORE,
+      TRUST_STORE_PASSWORD,
+      TRUST_STORE_TYPE,
+      KEY_STORE,
+      KEY_STORE_PASSWORD,
+      KEY_STORE_TYPE,
+    )
     propertiesToReset.foreach(System.getProperties.remove(_))
-
 
   }
   describe("#initialize") {
     it("should allow authentication to be set") {
       val config: Config = ConfigFactory.load("authConfig.conf")
-      val configuration: ConnectionConfiguration = new ConnectionConfiguration("faker", "development",
-        config)
+      val configuration: ConnectionConfiguration = new ConnectionConfiguration(
+        "faker",
+        "development",
+        config,
+      )
       configuration.auth === Some(PlaintextAuth("cassandra", "secret"))
     }
     it("should show defaults for useSsl") {
@@ -38,11 +45,15 @@ class ConnectionConfigurationTest extends AnyFunSpec with BeforeAndAfter with Ma
     }
     it("should set ssl keystore system properties when ssl is configured correctly") {
       val config: Config = ConfigFactory.load("sslKeystoreConfig.conf")
-      val configuration: ConnectionConfiguration = new ConnectionConfiguration("faker", "ssl_with_just_keystore",
-        config)
+      val configuration: ConnectionConfiguration = new ConnectionConfiguration(
+        "faker",
+        "ssl_with_just_keystore",
+        config,
+      )
       configuration.useSsl === true
       configuration.sslConfig match {
-        case Some(sslConfig) => sslConfig.setAsSystemProperties()
+        case Some(sslConfig) =>
+          sslConfig.setAsSystemProperties()
           System.getProperty(KEY_STORE) === "keystore.jks"
           System.getProperty(KEY_STORE_PASSWORD) === "secret"
           System.getProperty(KEY_STORE_TYPE) === "JCEKS"
@@ -54,11 +65,15 @@ class ConnectionConfigurationTest extends AnyFunSpec with BeforeAndAfter with Ma
     }
     it("should set ssl truststore system properties when ssl is configured correctly") {
       val config: Config = ConfigFactory.load("sslKeystoreConfig.conf")
-      val configuration: ConnectionConfiguration = new ConnectionConfiguration("faker", "ssl_with_just_truststore_and_no_type",
-        config)
+      val configuration: ConnectionConfiguration = new ConnectionConfiguration(
+        "faker",
+        "ssl_with_just_truststore_and_no_type",
+        config,
+      )
       configuration.useSsl === true
       configuration.sslConfig match {
-        case Some(sslConfig) => sslConfig.setAsSystemProperties()
+        case Some(sslConfig) =>
+          sslConfig.setAsSystemProperties()
           System.getProperty(KEY_STORE) === null
           System.getProperty(KEY_STORE_PASSWORD) === null
           System.getProperty(KEY_STORE_TYPE) === null
@@ -71,12 +86,15 @@ class ConnectionConfigurationTest extends AnyFunSpec with BeforeAndAfter with Ma
 
     it("should set ssl keystore and truststore system properties when ssl is configured correctly") {
       val config: Config = ConfigFactory.load("sslKeystoreConfig.conf")
-      val configuration: ConnectionConfiguration = new ConnectionConfiguration("faker",
+      val configuration: ConnectionConfiguration = new ConnectionConfiguration(
+        "faker",
         "ssl_with_keystore_and_truststore_and_no_keystore_type",
-        config)
+        config,
+      )
       configuration.useSsl === true
       configuration.sslConfig match {
-        case Some(sslConfig) => sslConfig.setAsSystemProperties()
+        case Some(sslConfig) =>
+          sslConfig.setAsSystemProperties()
           System.getProperty(KEY_STORE) === "keystore.jks"
           System.getProperty(KEY_STORE_PASSWORD) === "secret"
           System.getProperty(KEY_STORE_TYPE) === "JKS"
@@ -87,12 +105,14 @@ class ConnectionConfigurationTest extends AnyFunSpec with BeforeAndAfter with Ma
       }
     }
 
-
     it("should allow ssl usage with system properties directly, meaning keystore and truststore will be set from " +
       "outside") {
       val config: Config = ConfigFactory.load("sslKeystoreConfig.conf")
-      val configuration: ConnectionConfiguration = new ConnectionConfiguration("faker", "no_ssl_but_wanted_is_also_valid",
-        config)
+      val configuration: ConnectionConfiguration = new ConnectionConfiguration(
+        "faker",
+        "no_ssl_but_wanted_is_also_valid",
+        config,
+      )
       configuration.useSsl === true
       configuration.sslConfig === None
     }
@@ -105,8 +125,11 @@ class ConnectionConfigurationTest extends AnyFunSpec with BeforeAndAfter with Ma
 
     it("should allow multiple cassandra seed addresses to be read") {
       val config: Config = ConfigFactory.load("authConfig.conf")
-      val configuration: ConnectionConfiguration = new ConnectionConfiguration("faker", "multiple_seed_addresses_test",
-        config)
+      val configuration: ConnectionConfiguration = new ConnectionConfiguration(
+        "faker",
+        "multiple_seed_addresses_test",
+        config,
+      )
       configuration.seedAddress should equal(List("127.0.0.1", "127.0.0.2", "127.0.0.3"))
     }
   }

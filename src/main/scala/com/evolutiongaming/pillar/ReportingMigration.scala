@@ -1,8 +1,8 @@
 package com.evolutiongaming.pillar
 
-import java.time.Instant
-
 import com.datastax.driver.core.ResultSet
+
+import java.time.Instant
 
 class ReportingMigration(reporter: Reporter, wrapped: Migration) extends Migration {
   val description: String = wrapped.description

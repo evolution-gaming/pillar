@@ -1,11 +1,11 @@
 package com.evolutiongaming.pillar
 
-import java.io.{ByteArrayInputStream, FileInputStream}
-import java.time.Instant
-
 import org.scalatest.BeforeAndAfter
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+
+import java.io.{ByteArrayInputStream, FileInputStream}
+import java.time.Instant
 
 class ParserSpec extends AnyFunSpec with BeforeAndAfter with Matchers {
   describe("#parse") {
@@ -29,7 +29,7 @@ class ParserSpec extends AnyFunSpec with BeforeAndAfter with Matchers {
 
       it("assigns up") {
         val resource = new FileInputStream(migrationPath)
-        Parser().parse(resource).up should contain( """CREATE TABLE events (
+        Parser().parse(resource).up should contain("""CREATE TABLE events (
                                                              |  batch_id text,
                                                              |  occurred_at uuid,
                                                              |  event_type text,
@@ -40,7 +40,8 @@ class ParserSpec extends AnyFunSpec with BeforeAndAfter with Matchers {
     }
 
     describe("1469630066000_creates_users_groups_table.cql") {
-      val migrationPath = "src/test/resources/pillar/migrations/faker/1469630066000_creates_users_groups_table.cql"
+      val migrationPath =
+        "src/test/resources/pillar/migrations/faker/1469630066000_creates_users_groups_table.cql"
 
       it("returns a migration object") {
         val resource = new FileInputStream(migrationPath)
@@ -66,7 +67,8 @@ class ParserSpec extends AnyFunSpec with BeforeAndAfter with Matchers {
             |  id uuid,
             |  name text,
             |  PRIMARY KEY (id)
-            |)""".stripMargin)
+            |)""".stripMargin,
+        )
 
         migration.up should contain(
           """CREATE TABLE users (
@@ -75,7 +77,8 @@ class ParserSpec extends AnyFunSpec with BeforeAndAfter with Matchers {
             |  username text,
             |  password text,
             |  PRIMARY KEY (id)
-            |)""".stripMargin)
+            |)""".stripMargin,
+        )
       }
 
       it("assigns two down stages") {
@@ -102,7 +105,8 @@ class ParserSpec extends AnyFunSpec with BeforeAndAfter with Matchers {
     }
 
     describe("1370028264_adds_user_agent_to_views_table.cql") {
-      val migrationPath = "src/test/resources/pillar/migrations/faker/1370028264_adds_user_agent_to_views_table.cql"
+      val migrationPath =
+        "src/test/resources/pillar/migrations/faker/1370028264_adds_user_agent_to_views_table.cql"
 
       it("returns a migration object") {
         val resource = new FileInputStream(migrationPath)

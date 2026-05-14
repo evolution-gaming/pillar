@@ -17,7 +17,7 @@ object Registry {
   }
 
   private def parseMigrationsInDirectory(directory: File): Seq[Migration] = {
-    if(!directory.isDirectory) return List.empty
+    if (!directory.isDirectory) return List.empty
 
     val parser = Parser()
 
