@@ -1,6 +1,13 @@
 import Keys._
 import sbt._
 
+// DO NOT CHANGE THIS SETTING UNLESS YOU FULLY UNDERSTAND THE CONSEQUENCES!
+//
+// WARNING: BinaryCompatible is used instead of BinaryAndSourceCompatible because BinaryAndSourceCompatible fails
+// on new methods added to objects, which doesn't really break neither source, nor binary compatibility.
+// So the source compatibility should be guaranteed manually.
+ThisBuild / versionPolicyIntention := Compatibility.BinaryCompatible
+
 lazy val root = project
   .in(file("."))
   .settings(
@@ -8,7 +15,6 @@ lazy val root = project
     scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq("2.13.14", "3.3.3"),
     licenses := Seq(("MIT", url("https://opensource.org/licenses/MIT"))),
-    publishTo := Some(Resolver.evolutionReleases),
     libraryDependencies ++= dependencies,
 
     organization := "com.evolutiongaming",
@@ -18,7 +24,6 @@ lazy val root = project
     startYear := Some(2020),
 
     Test / fork := true,
-    releaseCrossBuild := true,
   )
 
 Compile / scalacOptions ++= Seq("-language:implicitConversions")
@@ -34,4 +39,4 @@ val dependencies = Seq(
 )
 
 addCommandAlias("fmt", "+all scalafmtAll scalafmtSbt")
-addCommandAlias("check", "show version")
+addCommandAlias("build", "+all scalafmtCheckAll scalafmtSbtCheck versionPolicyCheck Compile/doc test")

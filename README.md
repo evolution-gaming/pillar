@@ -309,6 +309,8 @@ Reference the acceptance spec suite for details.
 #### 5.2.0 - WIP
 * Add scalafmt auto-formatter
 * Drop cross-compilation for Scala 2.12 - cross-compile only for 2.13 and 3 LTS (3.3.x)
+* Minimal JDK version required is increased to 17
+* Restore release publishing to Maven Central
 
 #### 5.0.1
 * Consistency level can now be explicitly configured (the default is still `QUORUM`)
