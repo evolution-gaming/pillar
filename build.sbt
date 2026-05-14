@@ -34,4 +34,5 @@ val dependencies = Seq(
   "ch.qos.logback" % "logback-classic" % "1.2.3" % Test
 )
 
+addCommandAlias("fmt", "+all scalafmtAll scalafmtSbt")
 addCommandAlias("check", "show version")
