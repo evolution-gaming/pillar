@@ -1,32 +1,37 @@
 # Pillar
 
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
-[![Build Status](https://travis-ci.org/evolution-gaming/pillar.svg?branch=master)](https://travis-ci.org/evolution-gaming/pillar)
-[![Coverage Status](https://coveralls.io/repos/evolution-gaming/pillar/badge.svg)](https://coveralls.io/r/evolution-gaming/pillar)
-[![version](https://api.bintray.com/packages/evolutiongaming/maven/pillar/images/download.svg)](https://bintray.com/evolutiongaming/maven/pillar/_latestVersion)
+[![Build Status](https://github.com/evolution-gaming/pillar/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/evolution-gaming/pillar/actions/workflows/ci.yml?query=branch%3Amaster)
+[![Maven Central Version](https://img.shields.io/maven-central/v/com.evolutiongaming/pillar_2.13)](https://central.sonatype.com/artifact/com.evolutiongaming/pillar_2.13)
 
 Pillar manages migrations for your [Cassandra][cassandra] data stores.
 
 [cassandra]:http://cassandra.apache.org
 
-Pillar grew from a desire to automatically manage Cassandra schema as code. Managing schema as code enables automated
-build and deployment, a foundational practice for an organization striving to achieve [Continuous Delivery][cd].
+Pillar grew from a desire to automatically manage Cassandra schema as code. Managing schema as code
+enables automated
+build and deployment, a foundational practice for an organization striving to
+achieve [Continuous Delivery][cd].
 
-Pillar is to Cassandra what [Rails ActiveRecord][ar] migrations or [Play Evolutions][evolutions] are to relational
-databases with one key difference: Pillar is completely independent from any application development framework.
+Pillar is to Cassandra what [Rails ActiveRecord][ar] migrations or [Play Evolutions][evolutions] are
+to relational
+databases with one key difference: Pillar is completely independent from any application development
+framework.
 
 [cd]:http://en.wikipedia.org/wiki/Continuous_delivery
+
 [ar]:https://github.com/rails/rails/tree/master/activerecord
+
 [evolutions]:http://www.playframework.com/documentation/2.0/Evolutions
 
 Forked from https://github.com/Galeria-Kaufhof/pillar as that project is not maintained any more.
-As many upgrades are done, some of functionality we do not reqire, has been dropped.  
+As many upgrades are done, some of functionality we do not reqire, has been dropped.
 
 ## Installation
 
 ### Prerequisites
 
-1. Java 8 runtime environment
+1. Java 11 runtime environment
 1. Cassandra 2.0 with the native CQL protocol enabled
 
 ### From Source
@@ -37,7 +42,8 @@ This method requires [Simple Build Tool (sbt)][sbt].
 
 ### Packages
 
-Pillar is available at Maven Central under the GroupId `com.evolutiongaming` and ArtifactId pillar_2.12 or pillar_2.13. The current version of pillar is 5.0.0
+Pillar is available at Maven Central under the GroupId `com.evolutiongaming` and ArtifactId
+pillar_2.12 or pillar_2.13. The current version of pillar is 5.0.0
 
 #### sbt
 
@@ -59,16 +65,18 @@ Data Store
 : A logical grouping of environments. You will likely have one data store per application.
 
 Environment
-: A context or grouping of settings for a single data store. You will likely have at least development and production
+: A context or grouping of settings for a single data store. You will likely have at least
+development and production
 environments for each data store.
 
 Migration
-: A single change to a data store. Migrations have a description and a time stamp indicating the time at which it was
+: A single change to a data store. Migrations have a description and a time stamp indicating the
+time at which it was
 authored. Migrations are applied in ascending order and reversed in descending order.
 
 ### Command Line
 
-#####Here's the short version:
+##### Here's the short version:
 
 Given the configuration:
 
@@ -82,10 +90,11 @@ pillar.my_keyspace {
     }
 }
 ```
-  1. Write migrations, place them in conf/pillar/migrations/myapp.
-  1. Add pillar settings to conf/application.conf.
-  1. `% pillar initialize -e prod my_keyspace`
-  1. `% pillar migrate -e prod my_keyspace`
+
+1. Write migrations, place them in conf/pillar/migrations/myapp.
+1. Add pillar settings to conf/application.conf.
+1. `% pillar initialize -e prod my_keyspace`
+1. `% pillar migrate -e prod my_keyspace`
 
 *Note: development is the default environment if nothing is specified*
 
@@ -97,14 +106,18 @@ java -cp "slf4j-simple.jar:pillar-assembly.jar" com.evolutiongaming.pillar.cli.A
 
 #### Migration Files
 
-Migration files contain metadata about the migration, a [CQL][cql] statement used to apply the migration and,
-optionally, a [CQL][cql] statement used to reverse the migration. Each file describes one migration. You probably
-want to name your files according to time stamp and description, 1370028263_creates_views_table.cql, for example.
+Migration files contain metadata about the migration, a [CQL][cql] statement used to apply the
+migration and,
+optionally, a [CQL][cql] statement used to reverse the migration. Each file describes one migration.
+You probably
+want to name your files according to time stamp and description, 1370028263_creates_views_table.cql,
+for example.
 Pillar reads and parses all files in the migrations directory, regardless of file name.
 
 [cql]:http://cassandra.apache.org/doc/cql3/CQL.html
 
-Pillar supports reversible, irreversible and reversible with a no-op down statement migrations. Here are examples of
+Pillar supports reversible, irreversible and reversible with a no-op down statement migrations. Here
+are examples of
 each:
 
 Reversible migrations have up and down properties.
@@ -179,16 +192,18 @@ Each migration may optionally specify multiple stages. Stages are executed in th
 
     -- stage: 2
     DROP TABLE groups
-    
-   
-The Pillar command line interface expects to find migrations in conf/pillar/migrations unless overriden by the
+
+The Pillar command line interface expects to find migrations in conf/pillar/migrations unless
+overriden by the
 -d command-line option.
 
 #### Configuration
 
-Pillar uses the [Typesafe Config][typesafeconfig] library for configuration. The Pillar command-line interface expects
+Pillar uses the [Typesafe Config][typesafeconfig] library for configuration. The Pillar command-line
+interface expects
 to find an application.conf file in ./conf or ./src/main/resources.
-The ReplicationStrategy and ReplicationFactor can be configured via environment. If left out completely,
+The ReplicationStrategy and ReplicationFactor can be configured via environment. If left out
+completely,
 SimplyStrategy with RF 3 will be used by default.
 Given a data store called faker, the application.conf might look like the following:
 
@@ -202,6 +217,7 @@ Given a data store called faker, the application.conf might look like the follow
         }
     }
 ```
+
 ```
     pillar.faker {
         development {
@@ -217,6 +233,7 @@ Given a data store called faker, the application.conf might look like the follow
 ```
 
 ##### SSL & Authentication
+
 You can optionally add ssl options and authentication to each of the environments:
 
     pillar.faker {
@@ -266,7 +283,8 @@ Reference the acceptance spec suite for details.
 
 #### The pillar Executable
 
-The package installs to /opt/pillar by default. The /opt/pillar/bin/pillar executable usage looks like this:
+The package installs to /opt/pillar by default. The /opt/pillar/bin/pillar executable usage looks
+like this:
 
     Usage: pillar [OPTIONS] command data-store
 
@@ -304,40 +322,51 @@ Reference the acceptance spec suite for details.
 
 ### Release Notes
 
+#### 5.1.1
+
+* Switch release publishing to Maven Central
+
 #### 5.0.1
+
 * Consistency level can now be explicitly configured (the default is still `QUORUM`)
 
 #### 5.0.0
+
 * A lot of drastic changes due to forking stale project
 * Remove support for Red Hat packages
 * Update SBT to 1.3.8 and related SBT plugins
 * Cross-compile for only Scala 2.12 and 2.13
-* Update Cassandra driver and test libraries 
+* Update Cassandra driver and test libraries
 * Change root package to `com.evolutiongaming`
 * Require Java 8 as it is minimal for Scala 2.13
 * Use `Instant` instead of `Date`
 
 #### 4.1.0
+
 * Cross-compile for scala 2.11 and 2.12
 * Replace fpm with native-packager
 
 #### 4.0.0
 
- * Added the option to specify the name of the applied_migrations table in which the migrations are stored. This is useful
-   when using pillar in a muli-module setup where the services have their own non shared tables but live both in the same keyspace
-   and should be deployed independently from each other
+* Added the option to specify the name of the applied_migrations table in which the migrations are
+  stored. This is useful
+  when using pillar in a muli-module setup where the services have their own non shared tables but
+  live both in the same keyspace
+  and should be deployed independently from each other
 
 #### 3.3.0
 
- * initialize-method split up into two methods (createKeyspace and createMigrationsTable). 
+* initialize-method split up into two methods (createKeyspace and createMigrationsTable).
 
 #### 3.2.0
 
 * travis.yml file
 * travis build status in README
-* add replication strategy support [#1]:https://github.com/Galeria-Kaufhof/pillar/commit/e7429d52b21fb75a52c0756dc53abf930080a4e3
+* add replication strategy
+  support [#1]:https://github.com/Galeria-Kaufhof/pillar/commit/e7429d52b21fb75a52c0756dc53abf930080a4e3
 * tweaked scaladoc for CassandraSpec
-* quorum consistency [#2]:https://github.com/Galeria-Kaufhof/pillar/commit/2a956146c6ed6d3137ba59ecb3752718c03882a9
+* quorum
+  consistency [#2]:https://github.com/Galeria-Kaufhof/pillar/commit/2a956146c6ed6d3137ba59ecb3752718c03882a9
 * add replication strategy support [#9]:https://github.com/Galeria-Kaufhof/pillar/pull/9
 * small bugfixes
 
@@ -366,7 +395,8 @@ Reference the acceptance spec suite for details.
 #### 2.0.0
 
 * Allow configuration of Cassandra port (fkoehler)
-* Rework Migrator interface to allow passing a Session object when integrating Pillar as a library (magro, comeara)
+* Rework Migrator interface to allow passing a Session object when integrating Pillar as a library (
+  magro, comeara)
 
 #### 1.0.3
 
