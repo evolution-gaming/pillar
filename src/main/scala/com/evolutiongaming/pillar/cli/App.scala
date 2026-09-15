@@ -67,7 +67,7 @@ class App(reporter: Reporter, configuration: Config) {
     try {
       CommandExecutor().execute(command, reporter)
     } finally {
-      cassandraSession.close()
+      cluster.close()
     }
   }
 

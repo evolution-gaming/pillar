@@ -6,8 +6,8 @@ import org.scalatest.Assertion
 import org.scalatest.matchers.should.Matchers
 
 trait AcceptanceAssertions extends Matchers {
-  def session: Session
-  def keyspaceName: String
+  protected def session: Session
+  protected def keyspaceName: String
 
   protected def assertEmptyAppliedMigrationsTable(
     appliedMigrationsTableName: String = "applied_migrations",
