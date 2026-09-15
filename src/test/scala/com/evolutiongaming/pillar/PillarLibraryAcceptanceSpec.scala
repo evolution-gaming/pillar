@@ -260,7 +260,7 @@ with AcceptanceAssertions {
       val thrown = intercept[InvalidQueryException] {
         session.execute(QueryBuilder.select().from(keyspaceName, "views")).all()
       }
-      thrown.getMessage should startWith("unconfigured")
+      thrown.getMessage should include("table views does not exist")
 
       And("the migrator removes the reversed migration from the applied migrations table")
       val reversedMigration = migrations(1)
