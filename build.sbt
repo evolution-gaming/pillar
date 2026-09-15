@@ -1,7 +1,7 @@
 import sbt.*
 import sbt.Keys.*
 
-ThisBuild / organization := "com.evolutiongaming"
+ThisBuild / organization := "com.evolution"
 
 ThisBuild / startYear := Some(2020)
 ThisBuild / homepage := Some(url("https://github.com/evolution-gaming/pillar"))
