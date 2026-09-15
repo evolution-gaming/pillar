@@ -8,7 +8,7 @@
 
   <!-- log levels -->
   <logger name="com.datastax.driver.core" level="ERROR"/>
-  <logger name="com.evolutiongaming.pillar" level="INFO"/>
+  <logger name="com.evolution.pillar" level="INFO"/>
 
   <!--
   Recommended logback config for testcontainers:
