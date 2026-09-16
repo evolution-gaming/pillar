@@ -10,7 +10,7 @@ trait AcceptanceAssertions extends Matchers {
   protected def keyspaceName: String
 
   protected def assertEmptyAppliedMigrationsTable(
-    appliedMigrationsTableName: String = "applied_migrations",
+    appliedMigrationsTableName: String = CassandraMigrator.appliedMigrationsTableNameDefault,
   ): Assertion = {
     session.execute(
       QueryBuilder.select().from(keyspaceName, appliedMigrationsTableName),

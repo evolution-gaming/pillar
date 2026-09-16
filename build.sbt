@@ -59,9 +59,6 @@ lazy val compilerOpts = Seq(
       "-explain",
       "-explain-types",
       "-feature",
-
-      // used in ConnectionConfiguration
-      "-language:implicitConversions",
     ),
     if2 = Seq(
       "-Xsource:3",
@@ -92,8 +89,8 @@ lazy val root = project
     Test / fork := true,
 
     libraryDependencies ++= Seq(
-      "com.typesafe" % "config" % "1.4.9",
       "com.datastax.cassandra" % "cassandra-driver-core" % "3.11.5",
+      "org.slf4j" % "slf4j-api" % "2.0.19",
       "org.testcontainers" % "testcontainers-cassandra" % "2.0.5" % Test,
       "org.scalatest" %% "scalatest" % "3.2.20" % Test,
       "org.scalatestplus" %% "mockito-5-12" % "3.2.19.0" % Test,

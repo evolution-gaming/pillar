@@ -10,7 +10,7 @@ class ReportingMigrationSpec extends AnyFunSpec with Matchers with MockitoSugar 
   val wrapped = mock[Migration]
   val migration = new ReportingMigration(reporter, wrapped)
   val session = mock[Session]
-  val appliedMigrationsTableName = "applied_migrations"
+  val appliedMigrationsTableName = CassandraMigrator.appliedMigrationsTableNameDefault
 
   describe("#executeUpStatement") {
     migration.executeUpStatement(session, appliedMigrationsTableName)
