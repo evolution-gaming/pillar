@@ -4,19 +4,17 @@
 [![Build Status](https://github.com/evolution-gaming/pillar/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/evolution-gaming/pillar/actions/workflows/ci.yml?query=branch%3Amaster)
 [![Maven Central Version](https://img.shields.io/maven-central/v/com.evolution/pillar_2.13)](https://central.sonatype.com/artifact/com.evolution/pillar_2.13)
 
-Pillar manages migrations for your [Cassandra][cassandra] data stores.
+Pillar is a Scala library which manages migrations for your [Cassandra][cassandra] data stores.
 
 [cassandra]:http://cassandra.apache.org
 
 Pillar grew from a desire to automatically manage Cassandra schema as code. Managing schema as code
-enables automated
-build and deployment, a foundational practice for an organization striving to
+enables automated build and deployment, a foundational practice for an organization striving to
 achieve [Continuous Delivery][cd].
 
 Pillar is to Cassandra what [Rails ActiveRecord][ar] migrations or [Play Evolutions][evolutions] are
-to relational
-databases with one key difference: Pillar is completely independent from any application development
-framework.
+to relational databases with one key difference: Pillar is completely independent from any
+application development framework.
 
 [cd]:http://en.wikipedia.org/wiki/Continuous_delivery
 
@@ -24,101 +22,51 @@ framework.
 
 [evolutions]:http://www.playframework.com/documentation/2.0/Evolutions
 
-Forked from https://github.com/Galeria-Kaufhof/pillar as that project is not maintained any more.
-As many upgrades are done, some of functionality we do not reqire, has been dropped.
+Forked from https://github.com/Galeria-Kaufhof/pillar as that project is not maintained anymore. As
+many upgrades are done, some of the functionality we do not require has been dropped - most notably
+the command line interface, which is gone as of 6.0.0. Pillar is a library only.
 
 ## Installation
 
 ### Prerequisites
 
-1. Java 11 runtime environment
-1. Cassandra 2.0 with the native CQL protocol enabled
-
-### From Source
-
-This method requires [Simple Build Tool (sbt)][sbt].
-
-[sbt]:http://www.scala-sbt.org
+1. Java 17 runtime environment
+1. Scala 2.13 or Scala 3 (3.3 LTS)
+1. Cassandra server - Pillar uses the DataStax Java driver 3.x, the tests run against Cassandra 4.1
 
 ### Packages
 
-Pillar is available at Maven Central under the GroupId `com.evolutiongaming` and ArtifactId
-pillar_2.13 or pillar_3. The current version of pillar is 5.0.0
-
-#### sbt
+Pillar is available at Maven Central under the GroupId `com.evolution` and ArtifactId `pillar_2.13`
+or `pillar_3`.
 
 ```sbt
-  libraryDependencies += "com.evolutiongaming" %% "pillar" % "5.0.0"
-```
-
-#### Gradle
-
-```text
-  compile 'com.evolutiongaming:pillar_2.13:5.0.0'
+libraryDependencies += "com.evolution" %% "pillar" % latestVersion
 ```
 
 ## Usage
 
 ### Terminology
 
-Data Store
-: A logical grouping of environments. You will likely have one data store per application.
-
-Environment
-: A context or grouping of settings for a single data store. You will likely have at least
-development and production
-environments for each data store.
-
 Migration
 : A single change to a data store. Migrations have a description and a time stamp indicating the
-time at which it was
-authored. Migrations are applied in ascending order and reversed in descending order.
+time at which it was authored. Migrations are applied in ascending order of that time stamp and
+reversed in descending order.
 
-### Command Line
-
-##### Here's the short version:
-
-Given the configuration:
-
-```
-pillar.my_keyspace {
-  prod {
-     ...
-  }
-  development {
-       ...
-    }
-}
-```
-
-1. Write migrations, place them in conf/pillar/migrations/myapp.
-1. Add pillar settings to conf/application.conf.
-1. `% pillar initialize -e prod my_keyspace`
-1. `% pillar migrate -e prod my_keyspace`
-
-*Note: development is the default environment if nothing is specified*
-
-Or we could compile and run the jar:
-
-```
-java -cp "slf4j-simple.jar:pillar-assembly.jar" com.evolutiongaming.pillar.cli.App -d "path/to/migrations" -e "prod" initialize "my_keyspace"
-```
-
-#### Migration Files
+### Migration Files
 
 Migration files contain metadata about the migration, a [CQL][cql] statement used to apply the
-migration and,
-optionally, a [CQL][cql] statement used to reverse the migration. Each file describes one migration.
-You probably
-want to name your files according to time stamp and description, 1370028263_creates_views_table.cql,
-for example.
-Pillar reads and parses all files in the migrations directory, regardless of file name.
+migration and, optionally, a [CQL][cql] statement used to reverse the migration. Each file describes
+one migration. You probably want to name your files according to time stamp and description,
+1370028263_creates_views_table.cql, for example. Pillar reads and parses all files in the migrations
+directory, regardless of file name; it does not descend into subdirectories.
+
+The `authoredAt` property is a number of milliseconds since the epoch. Only its ordering matters to
+Pillar.
 
 [cql]:http://cassandra.apache.org/doc/cql3/CQL.html
 
 Pillar supports reversible, irreversible and reversible with a no-op down statement migrations. Here
-are examples of
-each:
+are examples of each:
 
 Reversible migrations have up and down properties.
 
@@ -193,145 +141,95 @@ Each migration may optionally specify multiple stages. Stages are executed in th
     -- stage: 2
     DROP TABLE groups
 
-The Pillar command line interface expects to find migrations in conf/pillar/migrations unless
-overriden by the
--d command-line option.
-
-#### Configuration
-
-Pillar uses the [Typesafe Config][typesafeconfig] library for configuration. The Pillar command-line
-interface expects
-to find an application.conf file in ./conf or ./src/main/resources.
-The ReplicationStrategy and ReplicationFactor can be configured via environment. If left out
-completely,
-SimplyStrategy with RF 3 will be used by default.
-Given a data store called faker, the application.conf might look like the following:
-
-```
-    pillar.faker {
-        development {
-            cassandra-seed-address: "127.0.0.1"
-            cassandra-keyspace-name: "pillar_development"
-            replicationStrategy: "SimpleStrategy"
-            replicationFactor: 0
-        }
-    }
-```
-
-```
-    pillar.faker {
-        development {
-            cassandra-seed-address: "127.0.0.1"
-            cassandra-keyspace-name: "pillar_development"
-            replicationStrategy: "NetworkTopologyStrategy"
-            replicationFactor: [
-                {dc1: 2},
-                {dc2: 3}
-            ]
-        }
-    }
-```
-
-##### SSL & Authentication
-
-You can optionally add ssl options and authentication to each of the environments:
-
-    pillar.faker {
-        development {
-            cassandra-seed-address: "127.0.0.1"
-            cassandra-keyspace-name: "pillar_development"
-            auth {
-                username: cassandra
-                password: secret
-            }
-        }
-        test {
-            auth {
-                username: cassandra
-                password: secret
-            }
-            use-ssl: true
-            ssl-options: {
-                    # ssl with just a trust store for test environment
-                    trust-store-path: foobar.jks # maps to javax.net.ssl.trustStore
-                    trust-store-password: secret # maps to javax.net.ssl.trustStorePassword
-                    trust-store-type: JKS        # maps to javax.net.ssl.trustStoreType
-                }
-
-            }
-        }
-        production {
-            auth {
-                username: cassandra
-                password: secret
-            }
-            use-ssl: true
-            ssl-options {
-                trust-store-path: foobar.jks # maps to javax.net.ssl.trustStore
-                trust-store-password: secret # maps to javax.net.ssl.trustStorePassword
-                trust-store-type: JKS        # maps to javax.net.ssl.trustStoreType
-                key-store-path: keystore.jks # maps to javax.net.ssl.keyStore
-                key-store-password: secret   # maps to javax.net.ssl.keyStorePassword
-                key-store-type: JKS          # maps to javax.net.ssl.keyStoreType
-            }
-
-    }
-
-[typesafeconfig]:https://github.com/typesafehub/config
-
-Reference the acceptance spec suite for details.
-
-#### The pillar Executable
-
-The package installs to /opt/pillar by default. The /opt/pillar/bin/pillar executable usage looks
-like this:
-
-    Usage: pillar [OPTIONS] command data-store
-
-    OPTIONS
-
-    -d directory
-    --migrations-directory directory  The directory containing migrations
-
-    -e env
-    --environment env                 environment
-
-    -t time
-    --time-stamp time                 The migration time stamp
-
-    PARAMETERS
-
-    command     migrate or initialize
-
-    data-store  The target data store, as defined in application.conf
-
-#### More Examples
-
-Initialize the faker datastore development environment
-
-    % pillar -e development initialize faker
-
-Apply all migrations to the faker datastore development environment
-
-    % pillar -e development migrate faker
+Migrations are read from a directory of your choice with `Registry.fromDirectory`. Alternatively,
+migrations can be defined in code with `Migration(...)` and passed to `Registry` directly - see
+`PillarLibraryAcceptanceSpec` for examples.
 
 ### Library
 
-You can also integrate Pillar directly into your application as a library.
-Reference the acceptance spec suite for details.
+Pillar is integrated into your application as a library. You create the Cassandra `Cluster`
+yourself, wrap a driver session into a Pillar `Session` and hand it to a `Migrator`:
 
-### Release Notes
+```scala
+import com.datastax.driver.core.{Cluster, ConsistencyLevel}
+import com.evolution.pillar.*
 
-#### 5.1.1
+import java.io.File
 
-* Switch release publishing to Maven Central
-* Remove cross-compilation to Scala 2.12 - cross-compile only to Scala 2.13 and 3 LTS (3.3.x)
+object Main extends App {
+  val queryConsistencyLevel = ConsistencyLevel.QUORUM
+  val contactPoint = "127.0.0.1"
+  val keyspace = "my_app_keyspace"
+  val keyspaceReplicationStrategy = SimpleStrategy(replicationFactor = 1)
 
-#### 5.0.1
+  val cluster = Cluster.builder()
+    .addContactPoints(contactPoint)
+    .build()
+
+  // reads migration file from the ./migrations directory
+  val registry = Registry.fromDirectory(new File("migrations"))
+  // logs the progress to INFO by default
+  val migrator = Migrator.make(registry = registry)
+
+  try {
+    val keyspaceCreateSession = new Session(cluster.connect(), queryConsistencyLevel)
+
+    // creates the keyspace and the applied migrations table
+    migrator.initialize(
+      session = keyspaceCreateSession,
+      keyspace = keyspace,
+      replicationStrategy = keyspaceReplicationStrategy,
+    )
+
+    val keyspaceMigrateSession = new Session(cluster.connect(keyspace), queryConsistencyLevel)
+
+    // applies all migrations not yet recorded in the applied migrations table
+    migrator.migrate(keyspaceMigrateSession)
+  } finally {
+    cluster.close()
+  }
+}
+```
+
+Take a look at the acceptance spec suite for more details.
+
+## Release Notes
+
+### 6.0.0
+
+Breaking changes:
+
+* The artifact group ID is changed from `com.evolutiongaming` to `com.evolution` - this is the first
+  release published to Maven Central
+* The root package is changed from `com.evolutiongaming.pillar` to `com.evolution.pillar`, to avoid
+  runtime class clashes between the Maven Central and the older non-Maven-Central versions
+* The command line interface is removed - no `pillar` executable, no
+  `com.evolutiongaming.pillar.cli`
+  package and no native packager distribution. It had been broken for a long time; Pillar is a
+  library only. The `application.conf` shipped in the published artifact is gone as well - the
+  configuration is supplied by your application
+* Java 17 is now the minimum runtime, up from Java 11
+* Cross-compilation to Scala 2.12 is dropped - Pillar cross-compiles to Scala 2.13 and Scala 3 LTS
+  (3.3.x) only
+* `ConnectionConfiguration` and the Typesafe Config support it relied on are removed, along with
+  `ReplicationStrategyBuilder` and `ConfigurationException`. Connection settings were only ever
+  needed by the command line interface; build the Cassandra `Cluster` in your application instead.
+  The `com.typesafe:config` dependency is gone.
+* `PrintStreamReporter` is replaced by `Slf4jReporter`, which `Migrator.make` installs by default -
+  migration progress is logged at INFO rather than written to stdout. `org.slf4j:slf4j-api` is a new
+  runtime dependency; supply your own SLF4J binding.
+* `Migrator.apply` is deprecated in favour of `Migrator.make`, which defaults the reporter and the
+  applied migrations table name.
+
+Other changes:
+
+* Cassandra driver 3.8.0 -> 3.11.5 (the last 3.x release)
+
+### 5.0.1
 
 * Consistency level can now be explicitly configured (the default is still `QUORUM`)
 
-#### 5.0.0
+### 5.0.0
 
 * A lot of drastic changes due to forking stale project
 * Remove support for Red Hat packages
@@ -342,24 +240,23 @@ Reference the acceptance spec suite for details.
 * Require Java 8 as it is minimal for Scala 2.13
 * Use `Instant` instead of `Date`
 
-#### 4.1.0
+### 4.1.0
 
 * Cross-compile for scala 2.11 and 2.12
 * Replace fpm with native-packager
 
-#### 4.0.0
+### 4.0.0
 
 * Added the option to specify the name of the applied_migrations table in which the migrations are
-  stored. This is useful
-  when using pillar in a muli-module setup where the services have their own non shared tables but
-  live both in the same keyspace
-  and should be deployed independently from each other
+  stored. This is useful when using pillar in a muli-module setup where the services have their own
+  non shared tables but live both in the same keyspace and should be deployed independently from
+  each other
 
-#### 3.3.0
+### 3.3.0
 
 * initialize-method split up into two methods (createKeyspace and createMigrationsTable).
 
-#### 3.2.0
+### 3.2.0
 
 * travis.yml file
 * travis build status in README
@@ -371,35 +268,35 @@ Reference the acceptance spec suite for details.
 * add replication strategy support [#9]:https://github.com/Galeria-Kaufhof/pillar/pull/9
 * small bugfixes
 
-#### 3.1.0
+### 3.1.0
 
 * Allow authentication and ssl connections (convoi)
 * Small bugfixes
 
-#### 3.0.0
+### 3.0.0
 
 * change package structure to de.kaufhof (MarcoPriebe)
 
-#### 2.1.1
+### 2.1.1
 
 * Update to sbt-sonatype dependency to version 1.1 (MarcoPriebe)
 * Update to Scala to version 2.11.6 (MarcoPriebe)
 
-#### 2.1.0
+### 2.1.0
 
 * Update to Cassandra dependency to version 3.0.0 (MarcoPriebe)
 
-#### 2.0.1
+### 2.0.1
 
 * Update a argot dependency to version 1.0.3 (magro)
 
-#### 2.0.0
+### 2.0.0
 
 * Allow configuration of Cassandra port (fkoehler)
-* Rework Migrator interface to allow passing a Session object when integrating Pillar as a library (
-  magro, comeara)
+* Rework Migrator interface to allow passing a Session object when integrating Pillar as a library
+  (magro, comeara)
 
-#### 1.0.3
+### 1.0.3
 
 * Clarify documentation (pvenable)
 * Update Datastax Cassandra driver to version 2.0.2 (magro)
@@ -408,7 +305,6 @@ Reference the acceptance spec suite for details.
 * Shutdown cluster in migrate & initialize (magro)
 * Transition support from StreamSend to Chris O'Meara (comeara)
 
-#### 1.0.1
+### 1.0.1
 
 * Add a "destroy" method to drop a keyspace (iamsteveholmes)
-
