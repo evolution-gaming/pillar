@@ -1,24 +1,25 @@
 package com.evolution.pillar
 
-import java.io.PrintStream
+import org.slf4j.Logger
+
 import java.time.Instant
 
-class PrintStreamReporter(stream: PrintStream) extends Reporter {
+class Slf4jReporter(logger: Logger) extends Reporter {
 
   override def migrating(session: Session, dateRestriction: Option[Instant]): Unit = {
-    stream.println(s"Migrating with date restriction $dateRestriction")
+    logger.info(s"applying outstanding migrations, date restriction: $dateRestriction")
   }
 
   override def applying(migration: Migration): Unit = {
-    stream.println(s"Applying ${ migration.authoredAt.toEpochMilli }: ${ migration.description }")
+    logger.info(s"applying migration: ${ migration.key }")
   }
 
   override def reversing(migration: Migration): Unit = {
-    stream.println(s"Reversing ${ migration.authoredAt.toEpochMilli }: ${ migration.description }")
+    logger.info(s"reversing migration: ${ migration.key }")
   }
 
   override def destroying(session: Session, keyspace: String): Unit = {
-    stream.println(s"Destroying $keyspace")
+    logger.info(s"destroying keyspace: $keyspace")
   }
 
   override def creatingKeyspace(
@@ -26,7 +27,7 @@ class PrintStreamReporter(stream: PrintStream) extends Reporter {
     keyspace: String,
     replicationStrategy: ReplicationStrategy,
   ): Unit = {
-    stream.println(s"Creating keyspace $keyspace")
+    logger.info(s"creating keyspace if not exists: $keyspace")
   }
 
   override def creatingMigrationsTable(
@@ -34,7 +35,6 @@ class PrintStreamReporter(stream: PrintStream) extends Reporter {
     keyspace: String,
     appliedMigrationsTableName: String,
   ): Unit = {
-    stream.println(s"Creating migrations-table [$appliedMigrationsTableName] in keyspace $keyspace")
+    logger.info(s"creating migrations table if not exists: $appliedMigrationsTableName in keyspace $keyspace")
   }
-
 }

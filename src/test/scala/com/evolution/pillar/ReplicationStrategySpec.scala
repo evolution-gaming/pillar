@@ -1,88 +1,76 @@
 package com.evolution.pillar
 
-import com.typesafe.config.ConfigException.BadValue
-import com.typesafe.config.{ConfigException, ConfigFactory}
-import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
-class ReplicationStrategySpec extends AnyFlatSpec with Matchers {
-  private val configuration = ConfigFactory.load()
-  private val datastore = "test"
+class ReplicationStrategySpec extends AnyFunSpec with Matchers {
 
-  behavior of "A configuration with definition whatsoever"
-  it should "return a SimpleStrategy object with a replication factor of 3" in {
-    val goodCase = ReplicationStrategyBuilder.getReplicationStrategy(configuration, datastore, "unknownenv")
-    goodCase shouldBe a[SimpleStrategy]
-    goodCase match {
-      case s: SimpleStrategy => s.replicationFactor should equal(3)
-      case _ =>
+  describe("SimpleStrategy") {
+    it("defaults to a replication factor of 3") {
+      SimpleStrategy().replicationFactor should equal(3)
+    }
+
+    it("renders CQL replication options") {
+      SimpleStrategy(2).cql should equal("{'class' : 'SimpleStrategy', 'replication_factor' : 2}")
+    }
+
+    it("renders its CQL as toString") {
+      val strategy = SimpleStrategy(2)
+      strategy.toString should equal(strategy.cql)
+    }
+
+    it("rejects a replication factor below one") {
+      intercept[IllegalArgumentException] {
+        SimpleStrategy(0)
+      }
+      intercept[IllegalArgumentException] {
+        SimpleStrategy(-1)
+      }
     }
   }
 
-  behavior of "A valid SimpleStrategy configuration"
-  it should "return a SimpleStrategy object" in {
-    val goodCase = ReplicationStrategyBuilder.getReplicationStrategy(configuration, datastore, "simpleGood")
-    goodCase shouldBe a[SimpleStrategy]
-    goodCase match {
-      case s: SimpleStrategy => s.replicationFactor should equal(1)
-      case _ =>
+  describe("NetworkTopologyStrategy") {
+    it("renders CQL replication options for a single data center") {
+      val strategy = NetworkTopologyStrategy(Seq(CassandraDataCenter("dc1", 2)))
+
+      strategy.cql should equal("{'class' : 'NetworkTopologyStrategy', 'dc1' : 2  }")
+    }
+
+    it("renders every data center, preserving the given order") {
+      val strategy = NetworkTopologyStrategy(
+        Seq(CassandraDataCenter("dc2", 3), CassandraDataCenter("dc1", 2)),
+      )
+
+      strategy.cql should equal("{'class' : 'NetworkTopologyStrategy', 'dc2' : 3 , 'dc1' : 2  }")
+    }
+
+    it("renders its CQL as toString") {
+      val strategy = NetworkTopologyStrategy(Seq(CassandraDataCenter("dc1", 2)))
+
+      strategy.toString should equal(strategy.cql)
+    }
+
+    it("rejects an empty list of data centers") {
+      intercept[IllegalArgumentException] {
+        NetworkTopologyStrategy(Seq.empty)
+      }
     }
   }
 
-  behavior of "A strategy configuration with an invalid strategy string value"
-  it should "return a ReplicationStrategyConfigError exception" in {
-    intercept[ReplicationStrategyConfigError] {
-      ReplicationStrategyBuilder.getReplicationStrategy(configuration, datastore, "simpleBadStrat")
+  describe("CassandraDataCenter") {
+    it("rejects a replication factor below one") {
+      intercept[IllegalArgumentException] {
+        CassandraDataCenter("dc1", 0)
+      }
+      intercept[IllegalArgumentException] {
+        CassandraDataCenter("dc1", -1)
+      }
     }
-  }
 
-  behavior of "A simple strategy configuration with a non-numeric replication factor"
-  it should "return a ConfigException.WrongType exception" in {
-    intercept[ConfigException.WrongType] {
-      ReplicationStrategyBuilder.getReplicationStrategy(configuration, datastore, "simpleBadRep")
-    }
-  }
-
-  behavior of "A simple strategy configuration with no replication factor"
-  it should "return a ConfigException.Missing exception" in {
-    intercept[ConfigException.Missing] {
-      ReplicationStrategyBuilder.getReplicationStrategy(configuration, datastore, "simpleMissingRep")
-    }
-  }
-
-  behavior of "A simple strategy configuration with no replication factor"
-  it should "return an BadValue exception" in {
-    intercept[BadValue] {
-      ReplicationStrategyBuilder.getReplicationStrategy(configuration, datastore, "simpleZeroRep")
-    }
-  }
-
-  behavior of "A valid network topology strategy configuration"
-  it should "return a NetworkTopology object with the configured values" in {
-    val goodCase = ReplicationStrategyBuilder.getReplicationStrategy(configuration, datastore, "netGood")
-    goodCase shouldBe a[NetworkTopologyStrategy]
-    goodCase match {
-      case n: NetworkTopologyStrategy =>
-        n.dataCenters.length should equal(2)
-        n.dataCenters(0).name should equal("dc1")
-        n.dataCenters(0).replicationFactor should equal(2)
-        n.dataCenters(1).name should equal("dc2")
-        n.dataCenters(1).replicationFactor should equal(3)
-      case _ =>
-    }
-  }
-
-  behavior of "A network topology strategy configuration with an empty replication factor array"
-  it should "return an BadValue exception" in {
-    intercept[BadValue] {
-      ReplicationStrategyBuilder.getReplicationStrategy(configuration, datastore, "netEmptyRep")
-    }
-  }
-
-  behavior of "A network topology strategy configuration with a datacenter with a replication factor of 0"
-  it should "return an BadValue exception" in {
-    intercept[BadValue] {
-      ReplicationStrategyBuilder.getReplicationStrategy(configuration, datastore, "netZeroRep")
+    it("rejects an empty name") {
+      intercept[IllegalArgumentException] {
+        CassandraDataCenter("", 3)
+      }
     }
   }
 }

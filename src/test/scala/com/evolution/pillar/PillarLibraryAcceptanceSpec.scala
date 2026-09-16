@@ -17,11 +17,11 @@ with BeforeAndAfter
 with Matchers
 with AcceptanceAssertions {
 
-  val keyspaceName = "test_%d".format(System.currentTimeMillis())
-  val simpleStrategy = SimpleStrategy()
-  val appliedMigrationsTableName = "applied_migrations"
+  override protected val keyspaceName: String = "test_%d".format(System.currentTimeMillis())
+  private val simpleStrategy = SimpleStrategy()
+  private val appliedMigrationsTableName = CassandraMigrator.appliedMigrationsTableNameDefault
 
-  val migrations = Seq(
+  private val migrations = Seq(
     Migration(
       "creates events table",
       Instant.now.minusSeconds(5).truncatedTo(ChronoUnit.MILLIS),
@@ -70,8 +70,8 @@ with AcceptanceAssertions {
         """.stripMargin)),
     ),
   )
-  val registry = Registry(migrations)
-  val migrator = Migrator(registry, appliedMigrationsTableName)
+  private val registry = Registry(migrations)
+  private val migrator = Migrator.make(registry)
 
   after {
     try {
@@ -100,7 +100,7 @@ with AcceptanceAssertions {
       Given("a non-existent keyspace")
 
       When("the migrator initializes the keyspace")
-      val migrator = Migrator(registry, "applied_migrations_non_default")
+      val migrator = Migrator.make(registry, appliedMigrationsTableName = "applied_migrations_non_default")
       migrator.initialize(session, keyspaceName, simpleStrategy)
 
       Then("the keyspace contains a applied_migrations column family")
@@ -146,7 +146,7 @@ with AcceptanceAssertions {
     }
 
     Scenario("destroy a bad keyspace") {
-      Given("a datastore with a non-existing keyspace")
+      Given("a non-existing keyspace")
 
       When("the migrator destroys the keyspace")
 
@@ -180,13 +180,13 @@ with AcceptanceAssertions {
 
       And("the applied_migrations table records the migrations")
       session.execute(
-        QueryBuilder.select().from(keyspaceName, "applied_migrations"),
+        QueryBuilder.select().from(keyspaceName, appliedMigrationsTableName),
       ).all().size() should equal(4)
     }
 
     Scenario("all migrations for a non default applied migrations table name") {
       Given("an initialized, empty, keyspace")
-      val migrator = Migrator(registry, "applied_migrations_non_default")
+      val migrator = Migrator.make(registry, appliedMigrationsTableName = "applied_migrations_non_default")
       migrator.initialize(session, keyspaceName, simpleStrategy)
 
       Given("a migration that creates an events table")
@@ -223,7 +223,7 @@ with AcceptanceAssertions {
 
       And("the applied_migrations table records the migration")
       session.execute(
-        QueryBuilder.select().from(keyspaceName, "applied_migrations"),
+        QueryBuilder.select().from(keyspaceName, appliedMigrationsTableName),
       ).all().size() should equal(1)
     }
 
@@ -266,7 +266,7 @@ with AcceptanceAssertions {
       val reversedMigration = migrations(1)
       val query = QueryBuilder.
         select().
-        from(keyspaceName, "applied_migrations").
+        from(keyspaceName, appliedMigrationsTableName).
         where(QueryBuilder.eq("authored_at", Date.from(reversedMigration.authoredAt))).
         and(QueryBuilder.eq("description", reversedMigration.description))
       session.execute(query).all().size() should equal(0)
@@ -286,7 +286,7 @@ with AcceptanceAssertions {
 
       Then("the migrator reverses the reversible migrations")
       session.execute(
-        QueryBuilder.select().from(keyspaceName, "applied_migrations"),
+        QueryBuilder.select().from(keyspaceName, appliedMigrationsTableName),
       ).all().size() should equal(1)
 
       And("the migrator throws an IrreversibleMigrationException")

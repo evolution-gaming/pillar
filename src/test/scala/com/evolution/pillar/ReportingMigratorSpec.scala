@@ -7,7 +7,7 @@ import org.scalatestplus.mockito.MockitoSugar
 class ReportingMigratorSpec extends AnyFunSpec with MockitoSugar {
   val reporter = mock[Reporter]
   val wrapped = mock[Migrator]
-  val appliedMigrationsTableName = "applied_migrations"
+  val appliedMigrationsTableName = CassandraMigrator.appliedMigrationsTableNameDefault
   val migrator = new ReportingMigrator(reporter, wrapped, appliedMigrationsTableName)
   val session = mock[Session]
   val keyspace = "myks"
