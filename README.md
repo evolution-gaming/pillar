@@ -1,5 +1,9 @@
 # Pillar
 
+**DISCONTINUED**
+
+Check out this replacement instead: https://github.com/evolution-gaming/hashira
+
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 [![Build Status](https://github.com/evolution-gaming/pillar/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/evolution-gaming/pillar/actions/workflows/ci.yml?query=branch%3Amaster)
 [![Maven Central Version](https://img.shields.io/maven-central/v/com.evolution/pillar_2.13)](https://central.sonatype.com/artifact/com.evolution/pillar_2.13)
